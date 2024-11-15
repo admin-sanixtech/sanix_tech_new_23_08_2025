@@ -3,29 +3,27 @@ include 'db_connection.php'; // Include database connection
 session_start();
 
 // Check if form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['answer'])) {
+    // Insert each answer into the database
     foreach ($_POST['answer'] as $question_id => $answer_id) {
-        // Insert user's answer into the database
         $stmt = $conn->prepare("INSERT INTO sanixazs_main_db.user_answers (user_id, question_id, selected_answer) VALUES (?, ?, ?)");
         $stmt->bind_param("iii", $_SESSION['user_id'], $question_id, $answer_id);
         $stmt->execute();
     }
 }
 
-// Query to get questions, selected answers, and correct answers
-$userId = $_SESSION['user_id'];
-$resultsQuery = "
-    SELECT 
-        q.question_text, 
-        a.answer_text AS user_answer, 
-        IF(a.is_correct = 1, 'Correct', 'Wrong') AS result
-    FROM sanixazs_main_db.quiz_questions q
-    JOIN sanixazs_main_db.user_answers ua ON q.question_id = ua.question_id
+// Retrieve quiz results
+$resultQuery = "
+    SELECT q.question_text, a.answer_text AS user_answer,
+           IF(a.answer_text = correct.answer_text, 'Correct', 'Incorrect') AS result
+    FROM sanixazs_main_db.user_answers ua
+    JOIN sanixazs_main_db.quiz_questions q ON ua.question_id = q.question_id
     JOIN sanixazs_main_db.answers a ON ua.selected_answer = a.answer_id
-    WHERE ua.user_id = ?
-";
-$stmt = $conn->prepare($resultsQuery);
-$stmt->bind_param("i", $userId);
+    JOIN sanixazs_main_db.answers correct ON q.correct_answer_id = correct.answer_id
+    WHERE ua.user_id = ?";
+
+$stmt = $conn->prepare($resultQuery);
+$stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
@@ -38,8 +36,6 @@ $result = $stmt->get_result();
     <title>Submit Quiz</title>
     <link rel="stylesheet" href="css/styles.css">
     <style>
-        /* Add your styles here */
-
         /* Styling for the quiz results table */
         .results-table {
             width: 100%;
@@ -87,6 +83,11 @@ $result = $stmt->get_result();
             padding: 20px;
             background-color: #fff;
         }
+
+        /* Container to hold sidebar and main content */
+        .container {
+            display: flex;
+        }
     </style>
 </head>
 <body>
@@ -117,7 +118,7 @@ $result = $stmt->get_result();
             <table class="results-table">
                 <tr>
                     <th>Serial No</th>
-                    <th>Question Attended</th>
+                    <th>Question</th>
                     <th>Your Answer</th>
                     <th>Result</th>
                 </tr>
@@ -130,7 +131,7 @@ $result = $stmt->get_result();
                                 <td>" . $serialNo . "</td>
                                 <td>" . htmlspecialchars($row['question_text']) . "</td>
                                 <td>" . htmlspecialchars($row['user_answer']) . "</td>
-                                <td>" . $row['result'] . "</td>
+                                <td>" . htmlspecialchars($row['result']) . "</td>
                               </tr>";
                         $serialNo++;
                     }
@@ -146,3 +147,9 @@ $result = $stmt->get_result();
 
 </body>
 </html>
+
+<?php
+// Close the statement and database connection
+$stmt->close();
+$conn->close();
+?>

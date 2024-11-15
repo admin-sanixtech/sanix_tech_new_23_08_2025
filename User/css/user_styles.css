@@ -143,3 +143,65 @@ nav {
 .row{
     display: inline;
 }
+
+
+/* For hover-based dropdown */
+.nav-menu .dropdown:hover .dropdown-menu {
+    display: block;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    background-color: #f8f9fa; /* Same as Bootstrap's default background */
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    border: 1px solid #ddd;
+}
+
+.dropdown-menu li {
+    display: block;
+    white-space: nowrap; 
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 10px 20px;
+    color: #333;
+    text-decoration: none;
+}
+
+.dropdown-menu li a:hover {
+    background-color: #007bff;
+    color: white;
+}
+
+/* For stats related */
+.stats-block {
+    display: flex;
+    justify-content: space-around;
+    background-color: #f8f9fa;
+    padding: 40px 0;
+    margin-bottom: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-item h2 {
+    font-size: 24px;
+    color: #007bff;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.stat-value {
+    font-size: 36px;
+    color: #343a40;
+    font-weight: bold;
+}

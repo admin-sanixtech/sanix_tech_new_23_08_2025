@@ -29,7 +29,11 @@ if (isset($_POST['submit'])) {
             // Redirect based on user role
             if ($role === 'admin') {
                 header("Location: admin/admin_dashboard.php");
-            } else {
+            } 
+            else if ($role === 'user') {
+                header("Location: User/user_dashboard.php");
+            } 
+            else {
                 header("Location: user_dashboard.php");
             }
             exit;
@@ -51,113 +55,19 @@ $conn->close(); // Close the connection
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Sanix Technology</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
-    <style>
-        /* Basic styles to center form and header/menu */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+    <link rel="stylesheet" href="css/user_styles.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="css/user_login_styles.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
 
-        .header {
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 24px;
-        }
-
-        .nav-menu {
-            text-align: center;
-            padding: 10px;
-            background-color: #444;
-        }
-
-        .nav-menu ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-menu ul li {
-            display: inline;
-            margin: 0 15px;
-        }
-
-        .nav-menu ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-        }
-
-        .login-container {
-            width: 400px;
-            margin: 50px auto;
-            background-color: white;
-            padding: 20px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-group input[type="text"],
-        .form-group input[type="password"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 10px;
-            background-color: #333;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .btn-primary:hover {
-            background-color: #555;
-        }
-
-        .error {
-            color: red;
-            text-align: center;
-        }
-    </style>
 </head>
 <body>
-    <div class="header">
-        Sanix Technology
-    </div>
+    <header>
+        <h1>Sanix Technology</h1>
+    </header>
 
-    <div class="nav-menu">
-        <ul>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Courses</a></li>
-            <li><a href="#">Projects</a></li>
-            <li><a href="careers.php">Careers</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="contact.php">Contact Us</a></li>
-        </ul>
-    </div>
+    <?php include 'navbar.php'; ?>
 
     <div class="login-container">
         <h2>Login</h2>

@@ -40,7 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us - Sanix Technology</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="css/user_styles.css"> <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -148,16 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Sanix Technology
     </div>
 
-    <div class="nav-menu">
-        <ul>
-            <li><a href="#">Services</a></li>
-            <li><a href="#">Courses</a></li>
-            <li><a href="#">Projects</a></li>
-            <li><a href="careers.php">Careers</a></li>
-            <li><a href="#">About Us</a></li>
-            <li><a href="contact.php">Contact Us</a></li>
-        </ul>
-    </div>
+    <?php include 'navbar.php'; ?>
 
     <div class="contact-container">
         <h2>Contact Us</h2>

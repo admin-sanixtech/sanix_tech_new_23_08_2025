@@ -10,7 +10,6 @@
                     <li><a href="#">Parent Login</a></li>
                     <li><a href="#">Branch Locator</a></li>
                     <li><a href="#">Our Blog</a></li>
-                    <li><a href="contact.php">Contact Us</a></li>
                 </ul>
             </div>
             <div class="col-md-3">
@@ -19,6 +18,9 @@
                     <li><strong>Email:</strong> info@Sanixtech.in</li>
                     <li><strong>Phone:</strong> +919392508648</li>
                     <li><strong>Timing:</strong> 9:30 AM to 6:30 PM</li>
+                </ul>
+                <ul class="list-unstyled">
+                    <li><strong>Email:</strong> hr@Sanixtech.in</li>
                 </ul>
             </div>
             <div class="col-md-3">
@@ -31,22 +33,20 @@
             <div class="col-md-2">
                 <h5>Knowledge Hubs</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#">Institutes</a></li>
-                    <li><a href="#">Sanix Technology Colleges</a></li>
-                    <li><a href="#">Sanix Technology Schools</a></li>
-                    <li><a href="#">Future Pathways</a></li>
-                    <li><a href="#">Sanix Technology IAS Academy</a></li>
-                    <li><a href="#">Infinity Learn</a></li>
+                    <li><a href="#">Projects</a></li>
+                    <li><a href="#">courses</a></li>
+                    <li><a href="#">services</a></li>
+                    <li><a href="#">News about Sanix</a></li>
                 </ul>
             </div>
             <div class="col-md-2">
                 <h5>Courses</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#">NEET UG</a></li>
-                    <li><a href="#">IIT (Main & Advanced)</a></li>
-                    <li><a href="#">National Engineering Intensive Course</a></li>
-                    <li><a href="#">Intermediate Public Exam</a></li>
-                    <li><a href="#">UPSC SERVICES</a></li>
+                    <li><a href="#">Python</a></li>
+                    <li><a href="#">SQL</a></li>
+                    <li><a href="#">Power BI</a></li>
+                    <li><a href="#">C</a></li>
+                    <li><a href="#">Azure Services</a></li>
                 </ul>
             </div>
         </div>

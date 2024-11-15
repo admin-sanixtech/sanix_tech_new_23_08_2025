@@ -1,246 +1,233 @@
 <?php
-error_reporting(E_ALL); // Enable error reporting
-ini_set('display_errors', 1); // Display errors
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 session_start();
 
-// Check if the user is logged in and is an admin
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: ../login.php");
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
     exit;
 }
 
-include 'db_connection.php'; 
+// Include database connection
+include 'db_connection.php';
 
-// Fetch total users
-$totalUsersQuery = "SELECT COUNT(*) as total_users FROM users";
-$totalUsersResult = mysqli_query($conn, $totalUsersQuery);
-$totalUsers = mysqli_fetch_assoc($totalUsersResult)['total_users'];
+// Fetch user information
+$userId = $_SESSION['user_id'];
+$userQuery = "SELECT * FROM sanixazs_main_db.users WHERE user_id = ?";
+$stmt = $conn->prepare($userQuery);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$userResult = $stmt->get_result();
+$user = $userResult->fetch_assoc();
 
-// Fetch active users count
-$activeUsersQuery = "SELECT COUNT(*) as active_users FROM users WHERE last_login >= NOW() - INTERVAL 30 DAY";
-$activeUsersResult = mysqli_query($conn, $activeUsersQuery);
-$activeUsers = mysqli_fetch_assoc($activeUsersResult)['active_users'];
+// Handle profile photo update
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
+    $targetDir = "uploads/";
+    $fileName = basename($_FILES['profile_photo']['name']);
+    $targetFilePath = $targetDir . $fileName;
+    $imageFileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+    $allowedTypes = array('jpg', 'png', 'jpeg', 'gif');
 
-// Fetch today's added users
-$todaysDate = date('Y-m-d');
-$todaysUsersQuery = "SELECT COUNT(*) as todays_users FROM users WHERE DATE(created_at) = '$todaysDate'";
-$todaysUsersResult = mysqli_query($conn, $todaysUsersQuery);
-$todaysUsers = mysqli_fetch_assoc($todaysUsersResult)['todays_users'];
+    if (in_array($imageFileType, $allowedTypes)) {
+        if (move_uploaded_file($_FILES['profile_photo']['tmp_name'], $targetFilePath)) {
+            // Update user photo in the database
+            $updatePhotoQuery = "UPDATE sanixazs_main_db.users SET photo = ? WHERE user_id = ?";
+            $stmt = $conn->prepare($updatePhotoQuery);
+            $stmt->bind_param("si", $fileName, $userId);
+            $stmt->execute();
 
-// Fetch total questions added
-$totalQuestionsAddedQuery = "SELECT COUNT(*) as total_questions_added FROM quiz_questions";
-$totalQuestionsAddedResult = mysqli_query($conn, $totalQuestionsAddedQuery);
-$totalQuestionsAdded = mysqli_fetch_assoc($totalQuestionsAddedResult)['total_questions_added'];
+            // Return the path of the uploaded file for the AJAX request
+            echo $targetFilePath;
+            exit;
+        } else {
+            echo "Error uploading the file.";
+            exit;
+        }
+    } else {
+        echo "Only JPG, JPEG, PNG, and GIF files are allowed.";
+        exit;
+    }
+}
 
-// Fetch total questions
-$totalQuestionsQuery = "SELECT COUNT(*) as total_questions FROM quiz_questions";
-$totalQuestionsResult = mysqli_query($conn, $totalQuestionsQuery);
-$totalQuestions = mysqli_fetch_assoc($totalQuestionsResult)['total_questions'];
+// Fetch quiz statistics
+$attemptedQuery = "SELECT COUNT(*) AS attempted FROM sanixazs_main_db.user_quiz_attempts WHERE user_id = ?";
+$stmt = $conn->prepare($attemptedQuery);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$attemptedResult = $stmt->get_result();
+$attempted = $attemptedResult->fetch_assoc()['attempted'];
 
 // Fetch today's added questions
-$todaysQuestionsQuery = "SELECT COUNT(*) as todays_questions FROM quiz_questions WHERE DATE(created_at) = '$todaysDate'";
-$todaysQuestionsResult = mysqli_query($conn, $todaysQuestionsQuery);
-$todaysQuestions = mysqli_fetch_assoc($todaysQuestionsResult)['todays_questions'];
+$todaysDate = date('Y-m-d');
+$todayAddedQuery = "SELECT COUNT(*) AS added_today FROM sanixazs_main_db.quiz_questions WHERE DATE(created_at) = ?";
+$stmt = $conn->prepare($todayAddedQuery);
+$stmt->bind_param("s", $todaysDate);
+$stmt->execute();
+$todayAddedResult = $stmt->get_result();
+$addedToday = $todayAddedResult->fetch_assoc()['added_today'];
 
-// Fetch questions attended by users
-$attendedQuestionsQuery = "
-    SELECT u.name as user_name, q.question_text 
-    FROM quiz_results r
-    JOIN users u ON r.user_id = u.user_id
-    JOIN quiz_questions q ON r.question_id = q.question_id
-";
-$attendedQuestionsResult = mysqli_query($conn, $attendedQuestionsQuery);
+// Fetch correct answers for star rating
+$correctAnswersQuery = "SELECT COUNT(*) AS correct FROM sanixazs_main_db.user_quiz_attempts WHERE user_id = ? AND is_correct = 1";
+$stmt = $conn->prepare($correctAnswersQuery);
+$stmt->bind_param("i", $userId);
+$stmt->execute();
+$correctAnswersResult = $stmt->get_result();
+$correctAnswers = $correctAnswersResult->fetch_assoc()['correct'];
+$starRating = floor($correctAnswers / 10); // 1 star for every 10 correct answers
 
+// Display user photo, fallback to default if not available
+$photoPath = !empty($user['photo']) ? 'uploads/' . htmlspecialchars($user['photo']) : 'uploads/default_profile.png';
 ?>
+
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="style.css"> <!-- Link to your CSS file -->
-    <style>
-        /* Styles for the header */
-        .header {
-            background-color: #007bff; /* Blue background */
-            color: white; /* White text color */
-            padding: 10px 20px; /* Padding for header */
-            display: flex; /* Flexbox layout */
-            justify-content: space-between; /* Space between elements */
-            align-items: center; /* Center items vertically */
-        }
+    <link  rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css"  />
+    <script src="https://kit.fontawesome.com/ae360af17e.js"  crossorigin="anonymous" ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	  <link rel="stylesheet" href="css/admin_styleone.css" />
+  </head>
 
-        .header h1 {
-            margin: 0; /* Remove default margin */
-        }
-
-        /* Sidebar styles */
-        .sidebar {
-            width: 200px;
-            float: left; /* Align to the left */
-            margin-right: 20px; /* Spacing between sidebar and main content */
-        }
-
-        .sidebar img {
-            width: 100%;
-            border-radius: 50%; /* Circular profile photo */
-        }
-
-        .sidebar-menu {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .sidebar-menu li {
-            margin: 10px 0;
-        }
-
-        .sidebar-menu li a {
-            text-decoration: none;
-            color: #007bff;
-        }
-
-        /* Dashboard styles */
-        .dashboard {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            margin: 20px;
-        }
-
-        .dashboard-item {
-            background-color: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            padding: 20px;
-            margin: 20px;
-            flex-basis: 22%; /* Allows four items per row */
-        }
-
-        .dashboard-item h1 {
-            font-size: 48px; /* Bigger font size for numbers */
-            color: #007bff;
-        }
-
-        .dashboard-item p {
-            font-size: 24px; /* Label font size */
-            color: #6c757d;
-        }
-
-        .main-content {
-            margin-left: 220px; /* To make room for the sidebar */
-        }
-
-        /* Table styles */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #007bff;
-            color: white;
-        }
-
-        /* Media queries for responsiveness */
-        @media (max-width: 768px) {
-            .dashboard-item {
-                flex-basis: 100%; /* Full width on small screens */
-            }
-            .main-content {
-                margin-left: 0; /* Remove sidebar margin */
-            }
-            .sidebar {
-                display: none; /* Hide sidebar on small screens */
-            }
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Sanix Technology</h1>
-        <div class="user-menu">
-            <span>
-                <?php echo isset($_SESSION['name']) ? $_SESSION['name'] : 'User'; ?> 
-                <i class="fa fa-user"></i>
-            </span>
-            <div class="user-dropdown">
-                <a href="#">Change Settings</a>
-                <a href="#">Change Password</a>
-                <a href="../logout.php">Logout</a>
+  <body>
+    <div class="wrapper">
+      <aside id="sidebar" class="js-sidebar">
+        <?php include 'admin_menu.php'; ?>
+      </aside>
+      <div class="main">
+        <?php include 'admin_navbar.php'; ?>
+        <main class="content px-3 py-2">
+          <div class="container-fluid">
+            <div class="mb-3">
+              <h4>Admin Dashboard</h4>
             </div>
-        </div>
-    </div>
-    
-    <div class="sidebar">
-        <img src="path/to/profile/photo.jpg" alt="Profile Photo"> <!-- Update with actual path -->
-        <ul class="sidebar-menu">
-            <li><a href="admin_dashboard.php">Dashboard</a></li>
-            <li><a href="quiz_management.php">Quiz Management</a></li>
-            <li><a href="quiz_page.php">Quiz Page</a></li>
-            <li><a href="users.php">Users</a></li>
-            <li><a href="questions.php">Questions</a></li>
-            <li><a href="add_question.php">Add Questions</a></li>
-            <li><a href="category_management.php">Categories</a></li>
-            <li><a href="subcategory_management.php">Subcategories</a></li>
-            <li><a href="#">Reports</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="../logout.php">Logout</a></li>
-        </ul>
-    </div>
-    
-    <div class="main-content">
-        <div class="dashboard">
-            <div class="dashboard-item">
-                <h1><?php echo $totalUsers; ?></h1>
-                <p>Total Users</p>
-            </div>
-            <div class="dashboard-item">
-                <h1><?php echo $activeUsers; ?></h1>
-                <p>Active Users (Last 30 Days)</p>
-            </div>
-            <div class="dashboard-item">
-                <h1><?php echo $todaysUsers; ?></h1>
-                <p>Today's Added Users</p>
-            </div>
-            <div class="dashboard-item">
-                <h1><?php echo $totalQuestionsAdded; ?></h1>
-                <p>Total Questions Added</p>
-            </div>
-            <div class="dashboard-item">
-                <h1><?php echo $totalQuestions; ?></h1>
-                <p>Total Questions</p>
-            </div>
-            <div class="dashboard-item">
-                <h1><?php echo $todaysQuestions; ?></h1>
-                <p>Today's Added Questions</p>
-            </div>
-        </div>
-        
-        <h2>Questions Attended by Users</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>User Name</th>
-                    <th>Question</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = mysqli_fetch_assoc($attendedQuestionsResult)): ?>
+            <?php include 'admin_dashboard_cnt.php'; ?>
+            <!-- Table Element -->
+            <div class="card border-0">
+              <div class="card-header">
+                <h5 class="card-title">Basic Table</h5>
+                <h6 class="card-subtitle text-muted">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  Voluptatum ducimus, necessitatibus reprehenderit itaque!
+                </h6>
+              </div>
+              <div class="card-body">
+                <table class="table">
+                  <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($row['user_name']); ?></td>
-                        <td><?php echo htmlspecialchars($row['question_text']); ?></td>
+                      <th scope="col">#</th>
+                      <th scope="col">First</th>
+                      <th scope="col">Last</th>
+                      <th scope="col">Handle</th>
                     </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th scope="row">1</th>
+                      <td>Mark</td>
+                      <td>Otto</td>
+                      <td>@mdo</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">2</th>
+                      <td>Jacob</td>
+                      <td>Thornton</td>
+                      <td>@fat</td>
+                    </tr>
+                    <tr>
+                      <th scope="row">3</th>
+                      <td colspan="2">Larry the Bird</td>
+                      <td>@twitter</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </main>
+        <a href="#" class="theme-toggle">
+          <i class="fa-regular fa-moon"></i>
+          <i class="fa-regular fa-sun"></i>
+        </a>
+        <?php include 'admin_footer.php'; ?>
+      </div>
     </div>
-</body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+    <script>
+        // Sample data for the bar chart
+        const courseLabels = ['Course 1', 'Course 2', 'Course 3', 'Course 4', 'Course 5']; // Replace with actual course names
+        const courseData = [12, 19, 3, 5, 2]; // Replace with actual data
+
+        const ctxBar = document.getElementById('coursesBarChart').getContext('2d');
+        const coursesBarChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: courseLabels,
+                datasets: [{
+                    label: 'Number of Students',
+                    data: courseData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Sample data for the pie chart
+        const visitorLabels = ['Direct', 'Referral', 'Social Media', 'Organic Search']; // Replace with actual visitor sources
+        const visitorData = [300, 150, 100, 200]; // Replace with actual visitor counts
+
+        const ctxPie = document.getElementById('visitorsPieChart').getContext('2d');
+        const visitorsPieChart = new Chart(ctxPie, {
+            type: 'pie',
+            data: {
+                labels: visitorLabels,
+                datasets: [{
+                    label: 'Visitors',
+                    data: visitorData,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Visitors Source'
+                    }
+                }
+            }
+        });
+        </script>
+
+  </body>
 </html>

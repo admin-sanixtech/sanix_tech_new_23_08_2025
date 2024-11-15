@@ -34,85 +34,34 @@ $subcategories_result = $conn->query("SELECT sc.subcategory_name, c.category_nam
                                        ON sc.category_id = c.category_id");
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subcategory Management</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/admin_styles.css"> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        header {
-            background-color: #f8f9fa;
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-        nav {
-            float: left;
-            width: 200px;
-            background: #f8f9fa;
-            border-right: 1px solid #ddd;
-            height: 100%;
-            padding: 10px;
-        }
-        nav a {
-            display: block;
-            margin: 5px 0;
-            padding: 8px;
-            color: #333;
-            text-decoration: none;
-        }
-        nav a:hover {
-            background-color: #ddd;
-        }
-        main {
-            margin-left: 220px;
-            padding: 10px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .tooltip { position: absolute; background: rgba(0,0,0,0.7); color: white; padding: 5px; pointer-events: none; }
+        .hover-lift { transition: transform 0.3s ease-in-out; }
+        .hover-lift:hover { transform: translateY(-5px); }
     </style>
 </head>
 <body>
+<?php
+include 'header.php';
+include 'sidebar.php';
+?>
 
-<header>
-    <h1>Sanix Technologies</h1>
-    <p>Logged in as: <?php echo htmlspecialchars($_SESSION['email']); ?></p>
-</header>
 
-<nav>
-    <h3>Admin Menu</h3>
-            <img src="path/to/profile_photo.jpg" alt="Profile Photo">
-            <ul class="sidebar-menu">
-                <li><a href="#" onclick="loadContent('dashboard')">Dashboard</a></li>
-                <li><a href="#" onclick="loadContent('users')">Users</a></li>
-                <li><a href="#" onclick="loadContent('questions')">Questions</a></li>
-                <li><a href="add_question.php">Add Questions</a></li>
-                <li><a href="category_management.php">Categories</a></li>
-                <li><a href="subcategory_management.php">Subcategories</a></li>
-                <li><a href="#">Reports</a></li>
-                <li><a href="#">Settings</a></li>
-                <li><a href="../logout.php">Logout</a></li>
-           
-    </ul>
-</nav>
-
-<main>
+<div class="main-content">
     <h2>Add New Subcategory</h2>
     <form action="" method="POST">
         <label for="category_id">Select Category:</label>
@@ -159,7 +108,7 @@ $subcategories_result = $conn->query("SELECT sc.subcategory_name, c.category_nam
             ?>
         </tbody>
     </table>
-</main>
+</div>
 
 </body>
 </html>
