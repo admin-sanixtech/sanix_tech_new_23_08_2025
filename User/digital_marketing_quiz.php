@@ -1,18 +1,19 @@
 <?php
 session_start();
 
+// Enable error reporting for debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
-include 'db_connection.php';
-
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: https://sanixtech.in");
+    header("Location: login.php");
     exit;
-  }
+}
+
+// Include database connection
+include_once 'db_connection.php';
 
 // Check for connection errors
 if ($conn->connect_error) {
@@ -35,7 +36,7 @@ if ($selectedDifficulty) {
 }
 $stmt = $conn->prepare($quizQuery);
 
-// Set Python category_id (e.g., assuming it's 1)
+
 $pythonCategoryId = 1;
 
 if ($selectedDifficulty) {
@@ -150,7 +151,7 @@ $answersResult = $stmt->get_result();
 
 <div class="container">
     <!-- Difficulty Selection Form -->
-    <form method="post" action="python_quiz.php" class="mb-4">
+    <form method="post" action="digital_marketing_quiz.php" class="mb-4">
         <label for="difficulty" class="form-label">Select Difficulty Level:</label>
         <select name="difficulty" id="difficulty" class="form-select" required>
             <option value="">--Select Difficulty--</option>
@@ -169,7 +170,7 @@ $answersResult = $stmt->get_result();
             <div class="question-box">
                 <h4>Question <?php echo $_SESSION['current_question_index'] + 1; ?>: <?php echo htmlspecialchars($currentQuestion['question_text']); ?></h4>
                 <div class="answer-box">
-                    <form method="post" action="python_quiz.php">
+                    <form method="post" action="digital_marketing_quiz.php">
                         <?php if ($answersResult->num_rows > 0): ?>
                             <?php while ($answer = $answersResult->fetch_assoc()): ?>
                                 <label>
@@ -187,7 +188,7 @@ $answersResult = $stmt->get_result();
                 <h5>Questions</h5>
                 <div class="d-flex flex-wrap">
                     <?php for ($i = 0; $i < count($questions); $i++): ?>
-                        <form method="post" action="python_quiz.php" style="display:inline;">
+                        <form method="post" action="digital_marketing_quiz.php" style="display:inline;">
                             <button type="submit" name="question_index" value="<?php echo $i; ?>" class="btn btn-outline-primary btn-sm m-1">
                                 <?php echo $i + 1; ?>
                             </button>

@@ -1,17 +1,23 @@
 <?php
-// Include database connection
-include 'db_connection.php';
+
 
 // Start the session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
+include 'db_connection.php';
+
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: https://sanixtech.in");
     exit;
-}
+  }
 
 // Get the logged-in user's ID
 $userId = $_SESSION['user_id'];

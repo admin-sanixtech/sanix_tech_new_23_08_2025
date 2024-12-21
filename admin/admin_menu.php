@@ -8,7 +8,8 @@ if (session_status() === PHP_SESSION_NONE) {
 include 'db_connection.php'; // Adjust the path as necessary
 
 // Fetch counts for items needing approval
-$pendingUserQuestionsCount = $conn->query("SELECT COUNT(*) as count FROM pending_questions")->fetch_assoc()['count'];
+$pendingUserQuestionsCount = $conn->query("SELECT COUNT(*) as count FROM quiz_questions WHERE status = 'pending'")->fetch_assoc()['count'];
+$pendingUserPostCount = $conn->query("SELECT COUNT(*) as count FROM posts  WHERE status = 'pending'")->fetch_assoc()['count'];
 
 // Count of unapproved books
 $unapprovedBooks = $conn->query("SELECT COUNT(*) as count FROM user_books WHERE approved = 0");
@@ -33,12 +34,14 @@ $pendingUserInterviewExpCount = $conn->query("SELECT COUNT(*) as count FROM user
         <li class="sidebar-item"><a href="/admin/admin_dashboard.php" class="sidebar-link"><i class="fa-solid fa-list pe-2"></i>Dashboard</a></li>
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed" data-bs-target="#Courses" data-bs-toggle="collapse" aria-expanded="false">
-                <i class="fa-solid fa-file-lines pe-2"></i> Courses
+                <i class="fa-solid fa-file-lines pe-2"></i> Learning Zone
             </a>
             <ul id="Courses" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item"><a href="#" class="sidebar-link">Python</a></li>
-                <li class="sidebar-item"><a href="#" class="sidebar-link">SQL</a></li>
-                <li class="sidebar-item"><a href="#" class="sidebar-link">Power BI</a></li>
+                <li class="sidebar-item"><a href="/admin/course_python.php" class="sidebar-link">Python</a></li>
+                <li class="sidebar-item"><a href="/admin/course_sql.php" class="sidebar-link">SQL</a></li>
+                <li class="sidebar-item"><a href="/admin/course_powerbi.php" class="sidebar-link">Power BI</a></li>
+                <li class="sidebar-item"><a href="/admin/course_ml.php" class="sidebar-link">Mechine Learning</a></li>
+                <li class="sidebar-item"><a href="/admin/course_digitalmarketing.php" class="sidebar-link">Digital Marketing</a></li>
             </ul>
         </li>
         <li class="sidebar-item">
@@ -54,10 +57,11 @@ $pendingUserInterviewExpCount = $conn->query("SELECT COUNT(*) as count FROM user
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed" data-bs-target="#Approve" data-bs-toggle="collapse" aria-expanded="false">
                 <i class="fa-regular fa-user pe-2"></i>Approve 
-                <span class="badge bg-danger"><?= $pendingUserQuestionsCount + $pendingUserBooksCount + $pendingUserCheatsheetCount + $pendingUserTestimonialsCount + $pendingUserInterviewExpCount ?></span>
+                <span class="badge bg-danger"><?= $pendingUserQuestionsCount + $pendingUserPostCount +$pendingUserBooksCount + $pendingUserCheatsheetCount + $pendingUserTestimonialsCount + $pendingUserInterviewExpCount ?></span>
             </a>
             <ul id="Approve" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item"><a href="/admin/approve_user_questions.php" class="sidebar-link">User Questions <span class="badge bg-warning"><?= $pendingUserQuestionsCount ?></span></a></li>
+                <li class="sidebar-item"><a href="/admin/approve_user_posts.php" class="sidebar-link">User Posts <span class="badge bg-warning"><?= $pendingUserPostCount ?></span></a></li>
                 <li class="sidebar-item"><a href="/admin/approve_user_books.php" class="sidebar-link">User Books <span class="badge bg-warning"><?= $pendingUserBooksCount ?></span></a></li>
                 <li class="sidebar-item"><a href="/admin/approve_user_cheatsheets.php" class="sidebar-link">User Cheatsheet <span class="badge bg-warning"><?= $pendingUserCheatsheetCount ?></span></a></li>
                 <li class="sidebar-item"><a href="/admin/approve_user_testimonials.php" class="sidebar-link">User Testimonial <span class="badge bg-warning"><?= $pendingUserTestimonialsCount ?></span></a></li>
@@ -85,9 +89,10 @@ $pendingUserInterviewExpCount = $conn->query("SELECT COUNT(*) as count FROM user
                 <li class="sidebar-item"><a href="/admin/admin_add_hand_written.php" class="sidebar-link">Add Hand Written</a></li>
                 <li class="sidebar-item"><a href="/admin/add_category.php" class="sidebar-link">Add Category</a></li>
                 <li class="sidebar-item"><a href="/admin/add_subcategory.php" class="sidebar-link">Add SubCategory</a></li>
+                <li class="sidebar-item"><a href="/admin/admin_add_projects.php" class="sidebar-link">Add Projects</a></li>
             </ul>
         </li>
-        <li class="sidebar-item"><a href="#" class="sidebar-link">Projects</a></li>
+        <li class="sidebar-item"><a href="/admin/projects_view.php" class="sidebar-link">Projects</a></li>
         <li class="sidebar-item"><a href="subscription.php" class="sidebar-link">Subscription</a></li>
         <li class="sidebar-item"><a href="#" class="sidebar-link">Interview Questions</a></li>
         <li class="sidebar-item"><a href="view_interview_exp.php" class="sidebar-link">Others Interview Experience</a></li>
@@ -100,9 +105,9 @@ $pendingUserInterviewExpCount = $conn->query("SELECT COUNT(*) as count FROM user
             </a>
             <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                 <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed" data-bs-target="#level-1" data-bs-toggle="collapse" aria-expanded="false">Level 1</a>
+                    <a href="#" class="sidebar-link collapsed" data-bs-target="#level-1" data-bs-toggle="collapse" aria-expanded="false">News</a>
                     <ul id="level-1" class="sidebar-dropdown list-unstyled collapse">
-                        <li class="sidebar-item"><a href="#" class="sidebar-link">Level 1.1</a></li>
+                        <li class="sidebar-item"><a href="/admin/send_news_email.php" class="sidebar-link">News to users</a></li>
                         <li class="sidebar-item"><a href="#" class="sidebar-link">Level 1.2</a></li>
                     </ul>
                 </li>

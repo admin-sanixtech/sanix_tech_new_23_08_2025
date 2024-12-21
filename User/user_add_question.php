@@ -7,11 +7,16 @@ error_reporting(E_ALL);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+
+
 include 'db_connection.php';
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: https://sanixtech.in");
+    exit;
+  }
 
 // Fetch categories and subcategories
 $categories = $conn->query("SELECT * FROM categories");
@@ -22,25 +27,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $subcategory_id = $_POST['subcategory_id'];
     $question_text = $_POST['question_text'];
     $question_type = $_POST['question_type'];
-    $difficulty_level = $_POST['question_difficulty_level'];  // Column name corrected
+    $difficulty_level = $_POST['question_difficulty_level'];
     $option_a = $_POST['option_a'] ?? null;
     $option_b = $_POST['option_b'] ?? null;
     $option_c = $_POST['option_c'] ?? null;
     $option_d = $_POST['option_d'] ?? null;
     $correct_answer = $_POST['correct_answer'] ?? null;
     $description = $_POST['description'];
-    $answer_content = $_POST['answer_content'] ?? null;
+    $answer_content = $_POST['answer_content'];
     $code_snippet = $_POST['code_snippet'] ?? null;
-    $created_by = $_SESSION['user_id'];
+    $created_by = $_SESSION['user_id'] ?? null; // Ensure user ID is available in session
+    $user_email = $_SESSION['user_email'] ?? 'unknown_user@example.com'; // User email
+    $status = 'pending'; // Default status
 
-    // Insert into the pending_questions table
-    $sql = "INSERT INTO pending_questions 
-            (category_id, subcategory_id, question_text, question_type, difficulty_level, option_a, option_b, option_c, option_d, correct_answer, description, answer_content, code_snippet, created_by) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    // Insert into the quiz_questions table
+    $sql = "INSERT INTO quiz_questions 
+            (category_id, subcategory_id, question_text, question_type, difficulty_level, option_a, option_b, option_c, option_d, correct_answer, description, answer_content, code_snippet, created_by, status) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisssssssssssi", $category_id, $subcategory_id, $question_text, $question_type, $difficulty_level, $option_a, $option_b, $option_c, $option_d, $correct_answer, $description, $answer_content, $code_snippet, $created_by);
-    
+    $stmt->bind_param("iisssssssssssis", $category_id, $subcategory_id, $question_text, $question_type, $difficulty_level, $option_a, $option_b, $option_c, $option_d, $correct_answer, $description, $answer_content, $code_snippet, $created_by, $status);
+
     if ($stmt->execute()) {
+        // Email settings
+        $admin_email = "admin@example.com"; // Replace with actual admin email
+        $subject = "New Question Submission - Approval Needed";
+
+        // Email to user
+        $user_message = "Dear User,\n\nThank you for submitting a question. Here are the details:\n\n";
+        $user_message .= "Question: $question_text\n";
+        $user_message .= "Description: $description\n";
+        $user_message .= "Answer Content: $answer_content\n\n";
+        $user_message .= "Your question is currently under review. We will notify you once it's approved.\n\nRegards,\nTeam";
+
+        mail($user_email, "Your Question Submission Details", $user_message);
+
+        // Email to admin
+        $admin_message = "Dear Admin,\n\nA new question has been submitted by the user ($user_email). Please review and approve.\n\n";
+        $admin_message .= "Question Details:\n";
+        $admin_message .= "Question: $question_text\n";
+        $admin_message .= "Description: $description\n";
+        $admin_message .= "Answer Content: $answer_content\n\n";
+        $admin_message .= "Please log in to the admin panel to review and approve.\n\nRegards,\nTeam";
+
+        mail($admin_email, $subject, $admin_message);
+
         echo "<script>alert('Question submitted for approval!');</script>";
     } else {
         echo "<script>alert('Error submitting question: " . $stmt->error . "');</script>";
@@ -117,15 +147,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <option value="Expert">Expert</option>
                                 </select>
                             </div>
-                            <div id="options-container" class="mb-3">
-                                <!-- Options fields will be shown here -->
-                            </div>
+                            <div id="options-container" class="mb-3"></div>
                             <div class="mb-3">
-                                <label for="description" class="form-label">Answer Description:</label>
+                                <label for="description" class="form-label">Description:</label>
                                 <textarea id="description" name="description" class="form-control" required></textarea>
                             </div>
                             <div class="mb-3">
-                                <label for="answer_content" class="form-label">Additional Answer Content:</label>
+                                <label for="answer_content" class="form-label">Answer Content:</label>
                                 <textarea id="answer_content" name="answer_content" class="form-control" required></textarea>
                             </div>
                             <button type="submit" class="btn btn-primary">Add Question</button>

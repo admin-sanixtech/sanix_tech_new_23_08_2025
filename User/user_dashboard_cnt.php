@@ -1,10 +1,22 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
+include 'db_connection.php';
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: https://sanixtech.in");
+    exit;
+  }
 
 // Check if session is not already started before starting it
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-include 'db_connection.php';
+
 
 // Retrieve Sanix Coins for the logged-in user
 $user_id = $_SESSION['user_id']; // Assuming user_id is stored in session
@@ -36,6 +48,12 @@ $stmt->execute();
 $result = $stmt->get_result();
 $data = $result->fetch_assoc();
 $attemptedQuestions = $data['attempted_count'] ?? 0;
+
+
+// Fetch total total_post_count
+$total_post_Query = "SELECT COUNT(*) as total_post_count FROM posts";
+$total_post_Result = mysqli_query($conn, $total_post_Query);
+$total_post_count = mysqli_fetch_assoc($total_post_Result)['total_post_count'];
 
 
 // Fetch questions attended by users
@@ -128,8 +146,8 @@ $attendedQuestionsResult = mysqli_query($conn, $attendedQuestionsQuery);
             <div class="card-body py-4">
                 <div class="d-flex align-items-start">
                     <div class="flex-grow-1">
-                        <h4 class="mb-2">New Data</h4>
-                        <p class="mb-2">Additional Information</p>
+                        <h4 class="mb-2"><?php echo $total_post_count; ?></h4>
+                        <p class="mb-2">Total Post Available</p>
                         <div class="mb-0">
                             <span class="badge text-info me-2">+5.5%</span>
                             <span class="text-muted">Growth This Quarter</span>

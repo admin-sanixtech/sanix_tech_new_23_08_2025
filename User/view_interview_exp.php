@@ -1,5 +1,16 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
 include 'db_connection.php';
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: https://sanixtech.in");
+    exit;
+  }
 
 // Fetch approved experiences with user details
 $sql = "SELECT e.experience_id, e.experience_text, e.created_at, u.name AS user_name

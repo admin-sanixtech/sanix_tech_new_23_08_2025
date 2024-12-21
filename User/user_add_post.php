@@ -1,18 +1,17 @@
 <?php
 session_start();
-include 'db_connection.php'; // Database connection
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+
+include 'db_connection.php';
+
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    echo "You need to log in to create a post.";
+    header("Location: https://sanixtech.in");
     exit;
-}
-
-
+  }
 
 $message = "";
 
@@ -24,14 +23,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'];
     $description = $_POST['description'];
 
-    // Insert the post into the database
-    $sql = "INSERT INTO posts (category_id, subcategory_id, title, description, createdby) 
-            VALUES (?, ?, ?, ?, ?)";
+    // Insert the post into the database with "pending" status
+    $sql = "INSERT INTO posts (category_id, subcategory_id, title, description, createdby, status) 
+            VALUES (?, ?, ?, ?, ?, 'pending')";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("iissi", $category_id, $subcategory_id, $title, $description, $user_id);
 
     if ($stmt->execute()) {
-        $message = "<div class='alert alert-success'>Post created successfully!</div>";
+        // Send email to the user
+        $user_email = ""; // Fetch the user's email from the database
+        $user_query = "SELECT email FROM users WHERE user_id = ?";
+        $user_stmt = $conn->prepare($user_query);
+        $user_stmt->bind_param("i", $user_id);
+        $user_stmt->execute();
+        $user_result = $user_stmt->get_result();
+
+        if ($user_result->num_rows > 0) {
+            $user_row = $user_result->fetch_assoc();
+            $user_email = $user_row['email'];
+        }
+
+        if ($user_email) {
+            $subject = "Thank you for creating a post!";
+            $message_body = "
+                Hello,<br><br>
+                Thank you for creating the post titled: <strong>$title</strong>.<br><br>
+                Description: $description<br><br>
+                Your post is currently pending admin approval. Once approved, you will receive a notification.<br><br>
+                Visit us at <a href='https://sanixtech.in'>sanixtech.in</a>.<br><br>
+                Regards,<br>SanixTech Team
+            ";
+
+            // Send the email
+            $headers = "MIME-Version: 1.0" . "\r\n";
+            $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+            $headers .= 'From: no-reply@sanixtech.in' . "\r\n";
+
+            mail($user_email, $subject, $message_body, $headers);
+        }
+
+        $message = "<div class='alert alert-success'>Post created successfully and sent for admin approval!</div>";
     } else {
         $message = "<div class='alert alert-danger'>Error: " . $conn->error . "</div>";
     }
@@ -42,38 +73,8 @@ $categories_query = "SELECT category_id, category_name FROM categories";
 $categories_result = $conn->query($categories_query);
 
 if (!$categories_result) {
-    die("Error fetching categories: " . $conn->error); // Debugging step
+    die("Error fetching categories: " . $conn->error);
 }
-
-
-// Check if category_id is passed in the request
-if (isset($_GET['category_id'])) {
-    $category_id = $_GET['category_id'];
-
-    // Fetch subcategories based on the selected category_id
-    $query = "SELECT subcategory_id, subcategory_name FROM subcategories WHERE category_id = ?";
-    $stmt = $conn->prepare($query);
-
-    // Bind the category_id parameter (single parameter)
-    $stmt->bind_param("i", $category_id); // "i" means integer for category_id
-
-    // Execute the statement
-    $stmt->execute();
-    
-    // Get the result
-    $result = $stmt->get_result();
-
-    // Check if subcategories are found
-    if ($result->num_rows > 0) {
-        // Output subcategory options
-        while ($row = $result->fetch_assoc()) {
-            echo "<option value='" . $row['subcategory_id'] . "'>" . htmlspecialchars($row['subcategory_name']) . "</option>";
-        }
-    } else {
-        echo "<option value=''>No subcategories available</option>";
-    }
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -81,17 +82,28 @@ if (isset($_GET['category_id'])) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Post</title>
+    <title>Create User Post</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/user_styleone.css" />
 </head>
+
 <body>
+<div class="wrapper">
+      <aside id="sidebar" class="js-sidebar">
+        <?php include 'user_menu.php'; ?>
+      </aside>
+      <div class="main">
+        <?php include 'user_navbar.php'; ?>
+        <main class="content px-3 py-2">
+          <div class="container-fluid">
+            <div class="mb-3">
 
 <div class="container mt-5">
     <h2>Create a New Post</h2>
 
     <?php if (!empty($message)) echo $message; ?>
 
-    <form action="admin_create_post.php" method="POST">
+    <form action="user_add_post.php" method="POST">
         <div class="mb-3">
             <label for="category_id" class="form-label">Category</label>
             <select name="category_id" id="category_id" class="form-select" required>

@@ -6,8 +6,8 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
+  header("Location: https://sanixtech.in");
+  exit;
 }
 
 // Include database connection
@@ -103,7 +103,7 @@ $photoPath = !empty($user['photo']) ? 'uploads/' . htmlspecialchars($user['photo
         <main class="content px-3 py-2">
           <div class="container-fluid">
             <div class="mb-3">
-              <h4>User Dashboard</h4>
+              <h4>My Dashboard</h4>
             </div>
             <?php include 'user_dashboard_cnt.php'; ?>
             <!-- Table Element -->

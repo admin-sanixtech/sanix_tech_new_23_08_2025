@@ -78,7 +78,7 @@ $result_performers = $conn->query($sql_performers);
 
 
 //$awstatsFilePath  = realpath('/home2/sanixazs/public_html/admin/awstats112024.sanixtech.in.txt');
-$awstatsFilePath  = realpath('/home2/sanixazs/tmp/awstats/awstats112024.sanixtech.in.txt');
+$awstatsFilePath  = realpath('/home2/sanixazs/tmp/awstats/awstats122024.sanixtech.in.txt');
 $visitorCount = 0;
 
 // Check if the file exists and is readable
