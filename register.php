@@ -118,6 +118,7 @@ if (isset($_POST['submit'])) {
             <button type="submit" name="submit" class="btn btn-primary">Register</button>
         </form>
     </div>
+    this is testing
 </body>
 </html>
 
