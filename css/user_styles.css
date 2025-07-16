@@ -216,3 +216,24 @@ nav {
     color: #343a40;
     font-weight: bold;
 }
+
+
+.contact-info {
+    display: flex; /* Ensures proper alignment of icons and text */
+    align-items: center; /* Vertically aligns icons and text */
+    gap: 20px; /* Adds space between items */
+}
+
+.btn-icon {
+    color: #007bff; /* Icon color */
+    font-size: 30px; /* Larger icon size */
+    text-decoration: none; /* Remove underline */
+    margin-left: 15px; /* Add space between icons */
+    display: inline-block; /* Ensures proper spacing */
+}
+
+.btn-icon:hover {
+    color: #0056b3; /* Hover effect */
+}
+
+

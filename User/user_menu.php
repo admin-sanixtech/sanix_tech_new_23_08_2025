@@ -8,14 +8,13 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
 include 'db_connection.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: https://sanixtech.in");
     exit;
-  }
+}
 
 try {
     // Fetch categories ordered by `category_name`
@@ -26,6 +25,28 @@ try {
     }
 } catch (Exception $e) {
     die("Error: " . $e->getMessage());
+}
+
+if (isset($_GET['category_id'])) {
+    $category_id = $_GET['category_id'];
+    // Query the database to fetch questions for the selected category
+    $query = "SELECT * FROM quiz_questions WHERE category_id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $category_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Display questions here
+    while ($row = $result->fetch_assoc()) {
+        // Display question details
+        echo '<div class="question-box">';
+        echo '<h4>' . htmlspecialchars($row['question']) . '</h4>';
+        // Display options and the correct answer, if needed
+        echo '</div>';
+    }
+} else {
+    // Handle the case where no category is selected
+    echo "Please select a valid category.";
 }
 ?>
 
@@ -82,47 +103,30 @@ try {
             </ul>
         </li>
 
-
-        <!-- Material Section -->
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed" data-bs-target="#Material" data-bs-toggle="collapse" aria-expanded="false">
-                <i class="fa-regular fa-user pe-2"></i>Material
-            </a>
-            <ul id="Material" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item"><a href="/User/user_books.php" class="sidebar-link">Books</a></li>
-                <li class="sidebar-item"><a href="/User/user_hand_written.php" class="sidebar-link">Hand Written Notes</a></li>
-                <li class="sidebar-item"><a href="/User/user_cheet_sheets.php" class="sidebar-link">Cheet Sheets</a></li>
-                <li class="sidebar-item"><a href="/User/user_vidoes.php" class="sidebar-link">Videos</a></li>
-            </ul>
-        </li>
-
-        <!-- Contribute Section -->
-        <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed" data-bs-target="#Contribute" data-bs-toggle="collapse" aria-expanded="false">
-                <i class="fa-regular fa-user pe-2"></i>Contribute
-            </a>
-            <ul id="Contribute" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item"><a href="/User/user_add_question.php" class="sidebar-link">Add Questions</a></li>
-                <li class="sidebar-item"><a href="/User/user_add_post.php" class="sidebar-link">Add Post</a></li>
-                <li class="sidebar-item"><a href="/User/user_add_testimonial.php" class="sidebar-link">Add Testimonial</a></li>
-                <li class="sidebar-item"><a href="/User/user_interview_exp.php" class="sidebar-link">Share Interview Experience</a></li>
-                <li class="sidebar-item"><a href="/User/user_books.php" class="sidebar-link">Books</a></li>
-                <li class="sidebar-item"><a href="/User/user_hand_written.php" class="sidebar-link">Hand Written</a></li>
-            </ul>
-        </li>
-
         <!-- Interview Questions Section -->
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed" data-bs-target="#Interview_Questions" data-bs-toggle="collapse" aria-expanded="false">
                 <i class="fa-regular fa-user pe-2"></i>Interview Questions
             </a>
             <ul id="Interview_Questions" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item"><a href="/User/user_view_python_int_question.php" class="sidebar-link">Python</a></li>
-                <li class="sidebar-item"><a href="/User/user_view_sql_int_question.php" class="sidebar-link">SQL</a></li>
-                <li class="sidebar-item"><a href="/User/user_view_powerbi_int_question.php" class="sidebar-link">Power BI</a></li>
-                <li class="sidebar-item"><a href="/User/user_view_azure_services_int_question.php" class="sidebar-link">Azure Services</a></li>
-                <li class="sidebar-item"><a href="/User/user_view_aws_int_question.php" class="sidebar-link">AWS</a></li>
-                <li class="sidebar-item"><a href="/User/user_view_gcp_int_question.php" class="sidebar-link">GCP</a></li>
+                <?php
+                // Reset the result set pointer
+                $result_categories->data_seek(0);
+
+                // Loop through categories and create Interview Questions menu items dynamically
+                if ($result_categories->num_rows > 0) {
+                    while ($row = $result_categories->fetch_assoc()) {
+                        $category_id = $row['category_id'];
+                        $category_name = $row['category_name'];
+                        // Generate a URL-friendly slug for the interview questions
+                        $category_slug = strtolower(str_replace(' ', '_', $category_name));
+                        // Pass category_id in the URL
+                        echo '<li class="sidebar-item"><a href="/User/user_view_int_question.php?category_id=' . $category_id . '" class="sidebar-link">' . $category_name . '</a></li>';
+                    }
+                } else {
+                    echo '<li class="sidebar-item"><a href="#" class="sidebar-link">No Interview Questions Available</a></li>';
+                }
+                ?>
             </ul>
         </li>
 

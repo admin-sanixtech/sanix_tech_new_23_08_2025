@@ -12,7 +12,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us - Sanix Technology</title>
+    <title>About Us - Sanix Technologies</title>
     <link rel="stylesheet" href="css/user_styles.css"> <!-- Link to your CSS file -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
@@ -69,9 +69,7 @@ session_start();
 </head>
 <body>
 
-    <div class="header">
-        <h1>Sanix Technology</h1>
-    </div>
+    <?php include 'header.php'; ?>
     <?php include 'navbar.php'; ?>
 
     <div class="content">
@@ -95,23 +93,10 @@ session_start();
         <h1>Meet Our Team</h1>
         <div class="team-section">
             <h2>Our Experts</h2>
-
-            <div class="team-member">
-                <img src="path/to/member1.jpg" alt="Member 1">
-                <h3>Srilatha</h3>
-                <p>Founder & CEO</p>
-            </div>
-
             <div class="team-member">
                 <img src="images/sandeep_img2.jpeg" alt="Member 2">
                 <h3> Mr Sandeepkumar Kasipeta</h3>
-                <p>Lead Developer</p>
-            </div>
-
-            <div class="team-member">
-                <img src="images/sandeep_img2.jpeg" alt="Member 3">
-                <h3> Mr Sandeepkumar Kasipeta</h3>
-                <p>Head of Operations</p>
+                <p>Lead Developer and Head of Operations</p>
             </div>
             <!-- Add more team members as needed -->
         </div>

@@ -1,14 +1,13 @@
 <?php
-// Enable error reporting for debugging purposes
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-
+// Enable error reporting for debugging purposes
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 include 'db_connection.php';
 
@@ -16,7 +15,7 @@ include 'db_connection.php';
 if (!isset($_SESSION['user_id'])) {
     header("Location: https://sanixtech.in");
     exit;
-  }
+}
 
 // Fetch categories and subcategories
 $categories = $conn->query("SELECT * FROM categories");
@@ -82,13 +81,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Question</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css">
     <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/user_styleone.css" />
+    <link rel="stylesheet" href="css/user_styleone.css">
 </head>
 <body>
 <div class="wrapper">
@@ -167,7 +166,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
-// Function to show appropriate fields based on question type selection
 function showOptions(type) {
     let container = document.getElementById('options-container');
     container.innerHTML = '';
@@ -199,29 +197,9 @@ function showOptions(type) {
                     <option value="C">C</option>
                     <option value="D">D</option>
                 </select>
-            </div>
-        `;
-    } else if (type === 'true_false') {
-        container.innerHTML = `
-            <div class="mb-3">
-                <label for="correct_answer" class="form-label">Correct Answer:</label>
-                <select id="correct_answer" name="correct_answer" class="form-control" required>
-                    <option value="">Select Correct Answer</option>
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                </select>
-            </div>
-        `;
-    } else if (type === 'code') {
-        container.innerHTML = `
-            <div class="mb-3">
-                <label for="code_snippet" class="form-label">Code Snippet:</label>
-                <textarea id="code_snippet" name="code_snippet" class="form-control" required></textarea>
-            </div>
-        `;
+            </div>`;
     }
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

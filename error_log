@@ -1,0 +1,5 @@
+[15-Jul-2025 17:52:49 UTC] PHP Fatal error:  Uncaught PDOException: SQLSTATE[HY000] [1045] Access denied for user 'db_user'@'localhost' (using password: YES) in /home2/sanixazs/public_html/mock_interviews.php:12
+Stack trace:
+#0 /home2/sanixazs/public_html/mock_interviews.php(12): PDO->__construct('mysql:host=loca...', 'db_user', Object(SensitiveParameterValue))
+#1 {main}
+  thrown in /home2/sanixazs/public_html/mock_interviews.php on line 12

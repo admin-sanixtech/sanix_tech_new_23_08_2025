@@ -1,36 +1,35 @@
 <?php
 include 'db_connection.php';
 
-// Fetch approved testimonials
+// Fetch approved testimonials using PDO
 $sql = "SELECT u.name, t.comment, t.created_at 
         FROM testimonials t 
         JOIN users u ON t.user_id = u.user_id 
         WHERE t.approved = 1";
-$result = $conn->query($sql);
+$stmt = $pdo->query($sql);
+$testimonials = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
     <div class="carousel-inner">
         <?php
-        if ($result->num_rows > 0) {
-            $isActive = true; // Flag to set the first item as active
+        if (count($testimonials) > 0) {
+            $isActive = true;
 
-            while ($row = $result->fetch_assoc()) {
-                // Open carousel item div and add "active" class only for the first item
+            foreach ($testimonials as $row) {
                 echo '<div class="carousel-item' . ($isActive ? ' active' : '') . '">';
-                echo '<div class="testimonial text-center">'; // Center-align content for styling
+                echo '<div class="testimonial text-center">';
                 echo '<p>"' . htmlspecialchars($row['comment']) . '"</p>';
                 echo '<h5>- ' . htmlspecialchars($row['name']) . '</h5>';
                 echo '</div>';
                 echo '</div>';
-                
-                // After the first item, remove the "active" class for subsequent items
                 $isActive = false;
             }
         } else {
-            // Display this message if no testimonials are available
             echo '<div class="carousel-item active">';
+            echo '<div class="testimonial text-center">';
             echo '<p>No approved testimonials available at the moment.</p>';
+            echo '</div>';
             echo '</div>';
         }
         ?>
@@ -46,7 +45,3 @@ $result = $conn->query($sql);
         <span class="visually-hidden">Next</span>
     </button>
 </div>
-
-<?php
-$conn->close();
-?>

@@ -1,145 +1,132 @@
 <?php
+// ---------- bootstrap / auth ----------
 session_start();
-include 'db_connection.php';
+require_once '../db_connection.php';      // <-- path may vary
 
-// Check if the user is logged in and has admin role
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    die("Access denied. You must be an admin to view this page.");
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    die('Access denied. Admins only.');
 }
 
-// Fetch categories for the dropdown
-$categories = $conn->query("SELECT * FROM sanixazs_main_db.categories");
+// ---------- add‑subcategory form handler ----------
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subcategory'])) {
+    $category_id      = $_POST['category_id'] ?? '';
+    $subcategory_name = trim($_POST['subcategory_name'] ?? '');
 
-// Fetch all subcategories (initially to display all)
-$subcategories_result = $conn->query("SELECT sc.subcategory_name, c.category_name 
-                                      FROM sanixazs_main_db.subcategories sc 
-                                      JOIN sanixazs_main_db.categories c 
-                                      ON sc.category_id = c.category_id");
+    if ($category_id && $subcategory_name) {
+        try {
+            $stmt = $pdo->prepare(
+                "INSERT INTO subcategories (category_id, subcategory_name)
+                 VALUES (:cid, :sname)"
+            );
+            $stmt->execute([
+                ':cid'   => $category_id,
+                ':sname' => $subcategory_name
+            ]);
+            $success = 'Sub‑category added!';
+        } catch (PDOException $e) {
+            $error = 'DB error: ' . $e->getMessage();
+        }
+    } else {
+        $error = 'Please fill in all fields.';
+    }
+}
 
+// ---------- fetch categories for <select> ----------
+$categories = $pdo->query("SELECT category_id, category_name FROM categories ORDER BY category_name")
+                  ->fetchAll(PDO::FETCH_ASSOC);
+
+// ---------- fetch ALL sub‑categories for initial table ----------
+$subStmt = $pdo->query(
+    "SELECT sc.subcategory_name, c.category_name
+       FROM subcategories sc
+  JOIN categories c ON sc.category_id = c.category_id
+   ORDER BY c.category_name, sc.subcategory_name"
+);
+$subrows = $subStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>Manage Subcategories</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" />
-    <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/admin_styleone.css" />
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .tooltip { position: absolute; background: rgba(0,0,0,0.7); color: white; padding: 5px; pointer-events: none; }
-        .hover-lift { transition: transform 0.3s ease-in-out; }
-        .hover-lift:hover { transform: translateY(-5px); }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Manage Sub‑categories</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/admin_styleone.css" />
 </head>
-<body>
+<body class="d-flex">
 
-<div class="wrapper">
-    <aside id="sidebar" class="js-sidebar">
-        <?php include 'admin_menu.php'; ?>
-    </aside>
-    <div class="main">
-        <?php include 'admin_navbar.php'; ?>
-        <main class="content px-3 py-2">
-            <div class="container-fluid">
-                <div class="card border-0">
-                    <div class="content">
-                        <!-- Add Subcategory Form -->
-                        <h2>Add Subcategory</h2>
-                        <form action="" method="POST">
-                            <label for="category_id">Select Category:</label>
-                            <select id="category_id" name="category_id" required>
-                                <option value="">Select a category</option>
-                                <?php
-                                if ($categories->num_rows > 0) {
-                                    while ($cat = $categories->fetch_assoc()) {
-                                        echo "<option value='" . $cat['category_id'] . "'>" . htmlspecialchars($cat['category_name']) . "</option>";
-                                    }
-                                }
-                                ?>
-                            </select>
+<aside id="sidebar"><?php include 'admin_menu.php'; ?></aside>
 
-                            <label for="subcategory_name">Subcategory Name:</label>
-                            <input type="text" id="subcategory_name" name="subcategory_name" required>
+<div class="flex-grow-1">
+    <?php include 'admin_navbar.php'; ?>
 
-                            <button type="submit" name="add_subcategory">Add Subcategory</button>
-                        </form>
+    <main class="container my-4">
+        <h2 class="mb-3">Add Sub‑category</h2>
 
-                        <!-- Display Existing Subcategories (based on selected category) -->
-                        <h2>Existing Subcategories</h2>
-                        <table id="subcategories_table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
-                                    <th>Category Name</th>
-                                    <th>Subcategory Name</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                if ($subcategories_result->num_rows > 0) {
-                                    $index = 1;
-                                    while ($row = $subcategories_result->fetch_assoc()) {
-                                        echo "<tr>
-                                                <td>" . $index++ . "</td>
-                                                <td>" . htmlspecialchars($row['category_name']) . "</td>
-                                                <td>" . htmlspecialchars($row['subcategory_name']) . "</td>
-                                              </tr>";
-                                    }
-                                } else {
-                                    echo "<tr><td colspan='3'>No subcategories found.</td></tr>";
-                                }
-                                ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <?php if (!empty($success)): ?>
+            <div class="alert alert-success"><?= $success ?></div>
+        <?php elseif (!empty($error)): ?>
+            <div class="alert alert-danger"><?= $error ?></div>
+        <?php endif; ?>
+
+        <form method="POST" class="row g-3 mb-5">
+            <div class="col-md-4">
+                <label class="form-label">Category</label>
+                <select name="category_id" class="form-select" required>
+                    <option value="">Select…</option>
+                    <?php foreach ($categories as $cat): ?>
+                        <option value="<?= $cat['category_id'] ?>"><?= htmlspecialchars($cat['category_name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
-        </main>
-    </div>
+
+            <div class="col-md-4">
+                <label class="form-label">Sub‑category name</label>
+                <input type="text" name="subcategory_name" class="form-control" required>
+            </div>
+
+            <div class="col-md-2 align-self-end">
+                <button type="submit" name="add_subcategory" class="btn btn-primary w-100">Add</button>
+            </div>
+        </form>
+
+        <h3 class="mb-3">Existing Sub‑categories</h3>
+        <table id="sub_table" class="table table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Category</th>
+                    <th>Sub‑category</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php if ($subrows): $i = 1;
+                foreach ($subrows as $r): ?>
+                    <tr>
+                        <td><?= $i++ ?></td>
+                        <td><?= htmlspecialchars($r['category_name']) ?></td>
+                        <td><?= htmlspecialchars($r['subcategory_name']) ?></td>
+                    </tr>
+            <?php endforeach; else: ?>
+                    <tr><td colspan="3" class="text-center">None found.</td></tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
+    </main>
+
+    <?php include 'admin_footer.php'; ?>
 </div>
 
-<?php include 'admin_footer.php'; ?>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/script.js"></script>
-
-<!-- jQuery for AJAX -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        // When category is selected, fetch subcategories
-        $('#category_id').on('change', function() {
-            var category_id = $(this).val();
-            if (category_id) {
-                // Send an AJAX request to fetch subcategories for the selected category
-                $.ajax({
-                    url: 'fetch_subcategories.php',
-                    method: 'POST',
-                    data: { category_id: category_id },
-                    success: function(response) {
-                        // Update the table with the subcategories for this category
-                        $('#subcategories_table tbody').html(response);
-                    }
-                });
-            } else {
-                // If no category is selected, reset the table to show all subcategories
-                $.ajax({
-                    url: 'fetch_subcategories.php',
-                    method: 'POST',
-                    data: { category_id: '' },  // Empty category_id to get all subcategories
-                    success: function(response) {
-                        // Update the table to show all subcategories
-                        $('#subcategories_table tbody').html(response);
-                    }
-                });
-            }
-        });
-    });
-</script>
 
+<!-- AJAX refresh when category dropdown changes -->
+<script>
+$('#category_id').on('change', function () {
+    $.post('fetch_subcategories.php', {category_id: this.value}, function (html) {
+        $('#sub_table tbody').html(html);
+    });
+});
+</script>
 </body>
 </html>

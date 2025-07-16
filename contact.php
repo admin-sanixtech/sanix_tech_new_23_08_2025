@@ -144,13 +144,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: green;
             text-align: center;
         }
+
+        .contact-container p {
+            font-size: 14px;
+            color: #555;
+        }
+        .contact-container h4 {
+            margin-top: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
-    <div class="header">
-        Sanix Technology
-    </div>
-
+    <?php include 'header.php'; ?>
     <?php include 'navbar.php'; ?>
 
     <div class="contact-container">
@@ -191,13 +197,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
         
         <?php
-        if (!empty($error_message)) {
-            echo "<p class='error'>$error_message</p>";
-        }
-        if (!empty($success_message)) {
-            echo "<p class='success'>$success_message</p>";
-        }
+            if (!empty($error_message)) {
+                echo "<p class='error'>$error_message</p>";
+            }
+            if (!empty($success_message)) {
+                echo "<p class='success'>$success_message</p>";
+            }
+
         ?>
+        <div class="mt-4">
+            <h4>Our Address:</h4>
+            <p>
+                4th Floor, Manjeera Plaza, 402,<br>
+                Satyam Theatre Rd, opp. Aditya Trade Center,<br>
+                Beside Prime Hospital, Kumar Basti,<br>
+                Srinivasa Nagar, Ameerpet,<br>
+                Hyderabad, Telangana 500016
+            </p>
+        </div>
+
+
     </div>
 </body>
 </html>

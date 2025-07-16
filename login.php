@@ -1,98 +1,97 @@
 <?php
-include 'db_connection.php'; // Include the database connection file
+// Enable error reporting
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-session_start(); // Start the session
+session_start();
+require_once 'db_connection.php';
 
-// Handle form submission
-if (isset($_POST['submit'])) {
-    // Retrieve user inputs
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+$error_message = '';
 
-    // Prepare and execute the SQL query to check for the user
-    $stmt = $conn->prepare("SELECT user_id, password, role FROM users WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $stmt->store_result();
+// Handle login form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-    if ($stmt->num_rows > 0) {
-        $stmt->bind_result($user_id, $hashed_password, $role);
-        $stmt->fetch();
+    try {
+        $stmt = $pdo->prepare("SELECT user_id, password, role FROM users WHERE email = :email");
+        $stmt->execute([':email' => $email]);
 
-        // Verify the entered password with the hashed password stored in the database
-        if (password_verify($password, $hashed_password)) {
-            // Password is correct; set session variables
-            $_SESSION['user_id'] = $user_id;
-            $_SESSION['email'] = $email;
-            $_SESSION['role'] = $role;
+        if ($stmt->rowCount() > 0) {
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['user_id'];
+                $_SESSION['email'] = $email;
+                $_SESSION['role'] = $user['role'];
 
-            // Redirect based on user role
-            if ($role === 'admin') {
-                header("Location: admin/admin_dashboard.php");
-            } 
-            else if ($role === 'user') {
-                header("Location: User/user_dashboard.php");
-            } 
-            else {
-                header("Location: user_dashboard.php");
+                // Redirect based on role
+                if ($user['role'] === 'admin') {
+                    header("Location: admin/admin_dashboard.php");
+                } elseif ($user['role'] === 'user') {
+                    header("Location: user/user_dashboard.php");
+                } else {
+                    header("Location: index.php");
+                }
+                exit;
+            } else {
+                $error_message = "Invalid password.";
             }
-            exit;
         } else {
-            $error_message = "Invalid password. Please try again.";
+            $error_message = "Email not registered.";
         }
-    } else {
-        $error_message = "Email not found. Please try again.";
+    } catch (PDOException $e) {
+        $error_message = "Error: " . $e->getMessage();
     }
-
-    $stmt->close();
 }
-$conn->close(); // Close the connection
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Sanix Technology</title>
-    <link rel="stylesheet" href="css/user_styles.css"> <!-- Link to your CSS file -->
-    <link rel="stylesheet" href="css/user_login_styles.css"> <!-- Link to your CSS file -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap & Font Awesome -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/user_styles.css"> <!-- Your custom styles -->
 </head>
 <body>
-    <header>
-        <h1>Sanix Technology</h1>
-    </header>
 
-    <?php include 'navbar.php'; ?>
+<?php include 'header.php'; ?>
+<?php include 'navbar.php'; ?>
 
-    <div class="login-container">
-        <h2>Login</h2>
-        <form action="login.php" method="POST">
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="text" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password:</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button type="submit" name="submit" class="btn-primary">Login</button>
-        </form>
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="text-center mb-4">Login</h2>
 
-        <!-- Display error message if any -->
-        <?php
-        if (isset($error_message)) {
-            echo "<p class='error'>$error_message</p>";
-        }
-        ?>
+    <?php if (!empty($error_message)): ?>
+        <div class="alert alert-danger"><?= htmlspecialchars($error_message) ?></div>
+    <?php endif; ?>
 
-        <!-- Add a Forgot Password link -->
-        <p><a href="password_reset_request.php">Forgot Password?</a></p>
-        <p>Don't have an account? <a href="register.php">Register here</a></p>
-    </div>
+    <form method="POST" action="login.php">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" name="email" id="email" required value="<?= htmlspecialchars($_POST['email'] ?? '') ?>">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" name="password" id="password" required>
+        </div>
+
+        <button type="submit" name="submit" class="btn btn-primary w-100">Login</button>
+
+        <div class="mt-3 text-center">
+            <a href="password_reset_request.php">Forgot Password?</a><br>
+            <span>Don't have an account? <a href="register.php">Register</a></span>
+        </div>
+    </form>
+</div>
+
+<?php include 'footer.php'; ?>
+
+<!-- JS Scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

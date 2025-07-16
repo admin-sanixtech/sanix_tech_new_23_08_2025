@@ -62,9 +62,7 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1>Sanix Technology</h1> 
-    </header>
+    <?php include 'header.php'; ?>
     <?php include 'navbar.php'; ?>
 
     <div class="container">

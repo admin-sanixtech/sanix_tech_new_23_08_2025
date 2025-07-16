@@ -1,15 +1,23 @@
 <?php
-// Database configuration
-$servername = "localhost"; // Replace with your server name or IP address
-$username = "sanixazs"; // Replace with your database username
-$password = "Kri1Lin2@#$%"; // Replace with your database password
-$dbname = "sanixazs_main_db"; // Your database name
+$servername = "localhost";
+$username   = "sanixazs";
+$password   = "Kri1Lin2@#$%";
+$dbname     = "sanixazs_main_db";
 
-// Create a connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+try {
+    // PDO connection
+    $pdo = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// Check the connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    // Also create a MySQLi connection if some code depends on $conn
+    $conn = new mysqli($servername, $username, $password, $dbname);
+    if ($conn->connect_error) {
+        throw new Exception("MySQLi connection failed: " . $conn->connect_error);
+    }
+
+} catch (PDOException $e) {
+    die("PDO DB connection failed: " . $e->getMessage());
+} catch (Exception $e) {
+    die("Error: " . $e->getMessage());
 }
 ?>

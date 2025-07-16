@@ -1,7 +1,7 @@
 <?php
-// Start the session only if it hasn't been started already
+ob_start();
 if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+    session_start(); // Start session only if it's not already started
 }
 
 // Include your database connection
@@ -23,6 +23,7 @@ $pendingUserTestimonialsCount = $conn->query("SELECT COUNT(*) as count FROM test
 
 // Count of unapproved interview experiences
 $pendingUserInterviewExpCount = $conn->query("SELECT COUNT(*) as count FROM user_interview_experience WHERE is_approved = 0")->fetch_assoc()['count'];
+ob_end_flush();
 ?>
 
 <!-- Content For Sidebar -->
@@ -90,6 +91,7 @@ $pendingUserInterviewExpCount = $conn->query("SELECT COUNT(*) as count FROM user
                 <li class="sidebar-item"><a href="/admin/add_category.php" class="sidebar-link">Add Category</a></li>
                 <li class="sidebar-item"><a href="/admin/add_subcategory.php" class="sidebar-link">Add SubCategory</a></li>
                 <li class="sidebar-item"><a href="/admin/admin_add_projects.php" class="sidebar-link">Add Projects</a></li>
+                <li class="sidebar-item"><a href="/admin/admin_add_interviewers.php" class="sidebar-link">Add interviewers</a></li>
             </ul>
         </li>
         <li class="sidebar-item"><a href="/admin/projects_view.php" class="sidebar-link">Projects</a></li>
@@ -110,6 +112,16 @@ $pendingUserInterviewExpCount = $conn->query("SELECT COUNT(*) as count FROM user
                         <li class="sidebar-item"><a href="/admin/send_news_email.php" class="sidebar-link">News to users</a></li>
                         <li class="sidebar-item"><a href="#" class="sidebar-link">Level 1.2</a></li>
                     </ul>
+                </li>
+            </ul>
+            <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed" data-bs-target="#level-1" data-bs-toggle="collapse" aria-expanded="false">Stock Market</a>
+                    <ul id="level-1" class="sidebar-dropdown list-unstyled collapse">
+                        <li class="sidebar-item"><a href="/admin/send_news_email.php" class="sidebar-link">stock market News to users</a></li>
+                        <li class="sidebar-item"><a href="/admin/admin_stock_analysis.php" class="sidebar-link">My Stock Market Analysis</a></li>
+                        
+                    </ul
                 </li>
             </ul>
         </li>
