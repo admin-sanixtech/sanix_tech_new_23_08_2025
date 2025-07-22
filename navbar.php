@@ -32,6 +32,7 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Interview Preparation</a>
                 <ul class="dropdown-menu">
                     <li><a href="https://www.sanixtech.in/mock_interviews.php">Mock Interview</a></li>
+                    <li><a href="https://www.sanixtech.in/mock_interviews.php">Quiz</a></li>
                     <li><a href="https://www.sanixtech.in/data_engineer_interview_prep.php">Data Engineering</a></li>
                     <li><a href="https://www.sanixtech.in/datascience_interview_prep.php">Data Science</a></li>
                     <li><a href="https://www.sanixtech.in/web_development.php">Web Development</a></li>
