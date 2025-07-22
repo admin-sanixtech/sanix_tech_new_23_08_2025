@@ -57,7 +57,7 @@ if (isset($_GET['category_id'])) {
     </div>
     <ul class="sidebar-nav">
         <li class="sidebar-item">
-            <a href="/User/user_dashboard.php" class="sidebar-link">
+            <a href="/user/user_dashboard.php" class="sidebar-link">
                 <i class="fa-solid fa-list pe-2"></i>Dashboard
             </a>
         </li>
@@ -68,17 +68,16 @@ if (isset($_GET['category_id'])) {
                 <i class="fa-solid fa-sliders pe-2"></i>Take Quiz
             </a>
             <ul id="Quiz" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <li class="sidebar-item"><a href="/User/python_quiz.php" class="sidebar-link">Python</a></li>
-                <li class="sidebar-item"><a href="/User/digital_marketing_quiz.php" class="sidebar-link">Digital Marketing</a></li>
-                <li class="sidebar-item"><a href="/User/sql_quiz.php" class="sidebar-link">SQL</a></li>
-                <li class="sidebar-item"><a href="/User/Powerbi_quiz.php" class="sidebar-link">Power BI</a></li>
-                <li class="sidebar-item"><a href="/User/azure_services_quiz.php" class="sidebar-link">Azure Services</a></li>
-                <li class="sidebar-item"><a href="/User/cyber_security_quiz.php" class="sidebar-link">Cyber Security</a></li>
-                <li class="sidebar-item"><a href="/User/AI_quiz.php" class="sidebar-link">AI</a></li>
-                <li class="sidebar-item"><a href="/User/datascience_quiz.php" class="sidebar-link">Data Science</a></li>
-                <li class="sidebar-item"><a href="/User/ml_quiz.php" class="sidebar-link">Machine Learning</a></li>
-            </ul>
-        </li>
+                <li class="sidebar-item"><a href="/user/python_quiz.php" class="sidebar-link">Python</a></li>
+                <li class="sidebar-item"><a href="/user/digital_marketing_quiz.php" class="sidebar-link">Digital Marketing</a></li>
+                <li class="sidebar-item"><a href="/user/sql_quiz.php" class="sidebar-link">SQL</a></li>
+                <li class="sidebar-item"><a href="/user/Powerbi_quiz.php" class="sidebar-link">Power BI</a></li>
+                <li class="sidebar-item"><a href="/user/azure_services_quiz.php" class="sidebar-link">Azure Services</a></li>
+                <li class="sidebar-item"><a href="/user/cyber_security_quiz.php" class="sidebar-link">Cyber Security</a></li>
+                <li class="sidebar-item"><a href="/user/AI_quiz.php" class="sidebar-link">AI</a></li>
+                <li class="sidebar-item"><a href="/user/datascience_quiz.php" class="sidebar-link">Data Science</a></li>
+                <li class="sidebar-item"><a href="/user/ml_quiz.php" class="sidebar-link">Machine Learning</a></li>
+            </ul>u        </li>
 
         <!-- Learning Zone Section -->
         <li class="sidebar-item">

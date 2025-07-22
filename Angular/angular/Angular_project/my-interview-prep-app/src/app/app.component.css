@@ -1,0 +1,30 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+app-header {
+  display: block;
+}
+
+.container {
+  display: flex;
+}
+
+app-sidebar {
+  width: 250px;
+  background-color: #f1f1f1;
+  height: calc(100vh - 60px);
+  padding: 20px;
+}
+
+app-content {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+a.router-link-active {
+  font-weight: bold;
+  color: #04aa6d;
+}
+
