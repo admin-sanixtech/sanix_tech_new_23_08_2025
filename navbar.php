@@ -38,8 +38,8 @@
                     <li><a href="https://www.sanixtech.in/machine_learning_interview_prep.php">Machine Learning</a></li>
                 </ul>
             </li>
-            <li><a href="careers.php">Careers</a></li>
 
+            <li><a href="careers.php">Careers</a></li>
             <li><a href="about_us.php">About Us</a></li>
             <li><a href="contact.php">Contact Us</a></li>
         </ul>
