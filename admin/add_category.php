@@ -86,6 +86,7 @@ if ($category_result->num_rows > 0) {
                                 <tr>
                                     <th>SNO</th>
                                     <th>Category Name</th>
+                                    <th>Category ID</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -94,6 +95,7 @@ if ($category_result->num_rows > 0) {
                                         <tr>
                                             <td><?php echo $index + 1; ?></td>
                                             <td><?php echo htmlspecialchars($category['category_name']); ?></td>
+                                            <td><?php echo htmlspecialchars($category['category_id']); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else : ?>

@@ -18,8 +18,9 @@
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <?php include 'navbar.php'; ?> <!-- includew your common navbar -->
+    
     <?php include('header.php'); ?> <!-- Include your common header -->
+    <?php include 'navbar.php'; ?> <!-- includew your common navbar -->
 
 <div class="container my-5 d-flex justify-content-center">
   <div class="center-accordion" > 

@@ -44,16 +44,13 @@ if (isset($_GET['category_id'])) {
         // Display options and the correct answer, if needed
         echo '</div>';
     }
-} else {
-    // Handle the case where no category is selected
-    echo "Please select a valid category.";
-}
+} 
 ?>
 
 <!-- Sidebar Content -->
 <div class="h-100">
     <div class="sidebar-logo">
-        <a href="#">Sanix Technology</a>
+        <a href="#">Sanix Technologies</a>
     </div>
     <ul class="sidebar-nav">
         <li class="sidebar-item">
@@ -77,28 +74,19 @@ if (isset($_GET['category_id'])) {
                 <li class="sidebar-item"><a href="/user/AI_quiz.php" class="sidebar-link">AI</a></li>
                 <li class="sidebar-item"><a href="/user/datascience_quiz.php" class="sidebar-link">Data Science</a></li>
                 <li class="sidebar-item"><a href="/user/ml_quiz.php" class="sidebar-link">Machine Learning</a></li>
-            </ul>u        </li>
+            </ul>      
+        </li>
 
         <!-- Learning Zone Section -->
         <li class="sidebar-item">
-            <a href="#" class="sidebar-link collapsed" data-bs-target="#CourseContent" data-bs-toggle="collapse" aria-expanded="false">
-                <i class="fa-solid fa-book pe-2"></i>Learning Zone
+            <a href="#" class="sidebar-link collapsed" data-bs-target="#Learning_Zone" data-bs-toggle="collapse" aria-expanded="false">
+                <i class="fa-solid fa-book-open pe-2"></i>Learning Zone
             </a>
-            <ul id="CourseContent" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                <?php
-                // Loop through categories and create menu items dynamically
-                if ($result_categories->num_rows > 0) {
-                    while ($row = $result_categories->fetch_assoc()) {
-                        $category_id = $row['category_id'];
-                        $category_name = $row['category_name'];
-                        // Generate a URL-friendly slug for the course
-                        $category_slug = strtolower(str_replace(' ', '_', $category_name));
-                        echo '<li class="sidebar-item"><a href="/User/course_' . $category_slug . '.php" class="sidebar-link">' . $category_name . '</a></li>';
-                    }
-                } else {
-                    echo '<li class="sidebar-item"><a href="#" class="sidebar-link">No Courses Available</a></li>';
-                }
-                ?>
+            <ul id="Learning_Zone" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item"><a href="/user/course_python.php" class="sidebar-link">Python</a></li>
+                <li class="sidebar-item"><a href="/user/course_sql.php" class="sidebar-link">SQL</a></li>
+                <li class="sidebar-item"><a href="/user/course_datascience.php" class="sidebar-link">Data Science</a></li>
+                <li class="sidebar-item"><a href="/user/course_machine_learning.php" class="sidebar-link">Machine Learning</a></li>
             </ul>
         </li>
 
@@ -120,7 +108,7 @@ if (isset($_GET['category_id'])) {
                         // Generate a URL-friendly slug for the interview questions
                         $category_slug = strtolower(str_replace(' ', '_', $category_name));
                         // Pass category_id in the URL
-                        echo '<li class="sidebar-item"><a href="/User/user_view_int_question.php?category_id=' . $category_id . '" class="sidebar-link">' . $category_name . '</a></li>';
+                        echo '<li class="sidebar-item"><a href="/user/user_view_int_question.php?category_id=' . $category_id . '" class="sidebar-link">' . $category_name . '</a></li>';
                     }
                 } else {
                     echo '<li class="sidebar-item"><a href="#" class="sidebar-link">No Interview Questions Available</a></li>';
@@ -130,10 +118,10 @@ if (isset($_GET['category_id'])) {
         </li>
 
         <!-- Additional Sections -->
-        <li class="sidebar-item"><a href="/User/projects_view.php" class="sidebar-link">Projects</a></li>
-        <li class="sidebar-item"><a href="/User/subscription_plans.php" class="sidebar-link">Subscription</a></li>
-        <li class="sidebar-item"><a href="/User/user_disscussions.php" class="sidebar-link">Discussions</a></li>
-        <li class="sidebar-item"><a href="/User/withdrawal.php" class="sidebar-link">Withdrawal</a></li>
+        <li class="sidebar-item"><a href="/user/projects_view.php" class="sidebar-link">Projects</a></li>
+        <li class="sidebar-item"><a href="/user/subscription_plans.php" class="sidebar-link">Subscription</a></li>
+        <li class="sidebar-item"><a href="/user/user_discussions.php" class="sidebar-link">Discussions</a></li>
+        <li class="sidebar-item"><a href="/user/withdrawal.php" class="sidebar-link">Withdrawal</a></li>
     </ul>
 </div>
 
