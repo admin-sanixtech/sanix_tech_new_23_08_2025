@@ -121,6 +121,7 @@ if (isset($_GET['category_id'])) {
         <li class="sidebar-item"><a href="/user/projects_view.php" class="sidebar-link">Projects</a></li>
         <li class="sidebar-item"><a href="/user/subscription_plans.php" class="sidebar-link">Subscription</a></li>
         <li class="sidebar-item"><a href="/user/user_discussions.php" class="sidebar-link">Discussions</a></li>
+        <li class="sidebar-item"><a href="/user/user_progress_form.php" class="sidebar-link">My Progress</a></li>
         <li class="sidebar-item"><a href="/user/withdrawal.php" class="sidebar-link">Withdrawal</a></li>
     </ul>
 </div>

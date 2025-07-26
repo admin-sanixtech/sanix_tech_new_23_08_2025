@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // Database connection file
+include 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = intval($_POST['user_id']);
@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $half_year = ($month <= 6) ? 'H1' : 'H2';
 
     $stmt = $conn->prepare("
-        INSERT INTO user_progress (
+        INSERT INTO sanixazs_main_db.user_progress (
             user_id, topic, duration_minutes, progress_percent, 
             work_description, date_of_work, year, month, week, 
             quarter, half_year, status, remarks

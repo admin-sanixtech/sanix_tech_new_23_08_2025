@@ -1,5 +1,5 @@
 <?php
-include 'db.php'; // Database connection file
+include 'db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = intval($_POST['user_id']);

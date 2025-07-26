@@ -99,6 +99,7 @@ ob_end_flush();
         <li class="sidebar-item"><a href="#" class="sidebar-link">Interview Questions</a></li>
         <li class="sidebar-item"><a href="view_interview_exp.php" class="sidebar-link">Others Interview Experience</a></li>
         <li class="sidebar-item"><a href="withdrawal.php" class="sidebar-link">Withdrawal</a></li>
+        <li class="sidebar-item"><a href="/admin/admin_progress_form.php" class="sidebar-link">my progress</a></li>
 
         <li class="sidebar-header">Multi Level Menu</li>
         <li class="sidebar-item">
@@ -120,7 +121,6 @@ ob_end_flush();
                     <ul id="level-1" class="sidebar-dropdown list-unstyled collapse">
                         <li class="sidebar-item"><a href="/admin/send_news_email.php" class="sidebar-link">stock market News to users</a></li>
                         <li class="sidebar-item"><a href="/admin/admin_stock_analysis.php" class="sidebar-link">My Stock Market Analysis</a></li>
-                        
                     </ul
                 </li>
             </ul>

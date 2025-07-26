@@ -14,7 +14,7 @@ $user_id = $_SESSION['user_id']; // Change this if you're storing user info diff
 </head>
 <body>
     <h2>Submit Your Work Progress</h2>
-    <form method="post" action="submit_user_progress.php">
+    <form method="post" action="submit_admin_progress.php">
         <input type="hidden" name="user_id" value="<?= $user_id ?>">
 
         <label>Topic:</label><br>
