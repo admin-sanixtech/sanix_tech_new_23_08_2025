@@ -2,31 +2,54 @@
 session_start();
 include 'db_connection.php';
 
-// Check if the user is logged in and has admin role
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    die("Access denied. You must be an admin to view this page.");
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    die('Access denied. Admins only.');
 }
 
-// Initialize an empty array for messages
 $messages = [];
 
-// Check if the form is submitted to add a new category
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['add_category'])) {
     $category_name = $conn->real_escape_string($_POST['category_name']);
-    
-    // Check for duplicate category
-    $check_sql = "SELECT * FROM sanixazs_main_db.categories WHERE category_name = '$category_name'";
-    $check_result = $conn->query($check_sql);
-    
-    if ($check_result->num_rows > 0) {
-        $messages[] = "Category '$category_name' already exists!";
-    } else {
-        $sql = "INSERT INTO sanixazs_main_db.categories (category_name) VALUES ('$category_name')";
-        if ($conn->query($sql) === TRUE) {
-            $messages[] = "New category '$category_name' added successfully!";
+
+    // Handle image upload
+    if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] === UPLOAD_ERR_OK) {
+        $img_name = $_FILES['category_image']['name'];
+        $img_tmp = $_FILES['category_image']['tmp_name'];
+        $img_ext = strtolower(pathinfo($img_name, PATHINFO_EXTENSION));
+        $allowed_ext = ['jpg', 'jpeg', 'png', 'gif'];
+
+        if (in_array($img_ext, $allowed_ext)) {
+            $new_img_name = uniqid('cat_', true) . '.' . $img_ext;
+            $upload_path = 'uploads/' . $new_img_name;
+
+            if (!is_dir('uploads')) {
+                mkdir('uploads', 0777, true);
+            }
+
+            if (move_uploaded_file($img_tmp, $upload_path)) {
+                // Check for duplicate category
+                $check_sql = "SELECT * FROM sanixazs_main_db.categories WHERE category_name = '$category_name'";
+                $check_result = $conn->query($check_sql);
+
+                if ($check_result->num_rows > 0) {
+                    $messages[] = "Category '$category_name' already exists!";
+                } else {
+                    $sql = "INSERT INTO sanixazs_main_db.categories (category_name, category_image)
+                            VALUES ('$category_name', '$upload_path')";
+                    if ($conn->query($sql) === TRUE) {
+                        $messages[] = "New category '$category_name' added successfully!";
+                    } else {
+                        $messages[] = "Error: " . $conn->error;
+                    }
+                }
+            } else {
+                $messages[] = "Failed to upload image.";
+            }
         } else {
-            $messages[] = "Error: " . $conn->error;
+            $messages[] = "Only JPG, PNG, and GIF files are allowed.";
         }
+    } else {
+        $messages[] = "Category image is required.";
     }
 }
 
@@ -44,11 +67,8 @@ if ($category_result->num_rows > 0) {
 <html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Add Category</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" />
-    <script src="https://kit.fontawesome.com/ae360af17e.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/admin_styleone.css" />
 </head>
 <body>
@@ -62,11 +82,14 @@ if ($category_result->num_rows > 0) {
             <div class="container-fluid">
                 <div class="card border-0">
                     <div class="content">
-                        <!-- Add Category Form -->
                         <h2>Add New Category</h2>
-                        <form action="" method="POST" class="mb-3">
+                        <form action="" method="POST" enctype="multipart/form-data" class="mb-3">
                             <label for="category_name" class="form-label">Category Name:</label>
                             <input type="text" id="category_name" name="category_name" class="form-control mb-2" required>
+
+                            <label for="category_image" class="form-label">Category Image:</label>
+                            <input type="file" id="category_image" name="category_image" class="form-control mb-2" accept="image/*" required>
+
                             <button type="submit" name="add_category" class="btn btn-primary">Add Category</button>
                         </form>
 
@@ -87,6 +110,9 @@ if ($category_result->num_rows > 0) {
                                     <th>SNO</th>
                                     <th>Category Name</th>
                                     <th>Category ID</th>
+                                    <th>Image</th>
+                                    <th>Edit</th>
+                                    <th>Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -96,16 +122,28 @@ if ($category_result->num_rows > 0) {
                                             <td><?php echo $index + 1; ?></td>
                                             <td><?php echo htmlspecialchars($category['category_name']); ?></td>
                                             <td><?php echo htmlspecialchars($category['category_id']); ?></td>
+                                            <td>
+                                                <?php if (!empty($category['category_image'])): ?>
+                                                    <img src="<?php echo htmlspecialchars($category['category_image']); ?>" width="80" height="80" alt="Category Image">
+                                                <?php else: ?>
+                                                    No image
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <a href="edit_category.php?id=<?php echo $category['category_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
+                                            </td>
+                                            <td>
+                                                <a href="delete_category.php?id=<?php echo $category['category_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this category?');">Delete</a>
+                                            </td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else : ?>
-                                    <tr><td colspan="2">No categories found.</td></tr>
+                                    <tr><td colspan="6">No categories found.</td></tr>
                                 <?php endif; ?>
                             </tbody>
                         </table>
 
                         <hr>
-
                         <?php include 'admin_footer.php'; ?>
                     </div>
                 </div>
@@ -114,6 +152,5 @@ if ($category_result->num_rows > 0) {
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/script.js"></script>
 </body>
 </html>

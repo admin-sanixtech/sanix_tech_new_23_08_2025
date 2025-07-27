@@ -7,11 +7,7 @@
 
                     <!-- Core Services -->
                     <li><a href="https://www.sanixtech.in/web_development.php">Web Development</a></li>
-                    <li><a href="https://www.sanixtech.in/industry_st_projects.php">Industry-grade Project Solutions</a></li>
-                    <li><a href="https://www.sanixtech.in/academic_projects.php">Academic Project Support</a></li>
                     <li><a href="https://www.sanixtech.in/data_migration.php">Data Migration Services</a></li>
-                    <li><a href="https://www.sanixtech.in/training_certification.php">Training & Certification</a></li>
-                    <li><a href="https://www.sanixtech.in/mock_interviews.php">Mock Interviews & Career Help</a></li>
                     <li><a href="https://www.sanixtech.in/custom_solutions.php">Custom Software Solutions</a></li>
                     <li><a href="https://www.sanixtech.in/internship_placement.php">Internship & Placement</a></li>
 
@@ -48,20 +44,15 @@
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects</a>
                 <ul class="dropdown-menu">
-                    <li><a href="https://www.sanixtech.in/python_course.php">Python Programming</a></li>
-                    <li><a href="https://www.sanixtech.in/datascience_projects.php">Data Science</a></li>
-                    <li><a href="https://www.sanixtech.in/web_development.php">Web Development</a></li>
-                    <li><a href="https://www.sanixtech.in/machine_learning_projects.php">Machine Learning</a></li>
+                    <li><a href="https://www.sanixtech.in/industry_st_projects.php">Industry-grade Project Solutions</a></li>
+                    <li><a href="https://www.sanixtech.in/academic_projects.php">Academic Project Support</a></li>
                 </ul>
             </li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Interview Preparation</a>
                 <ul class="dropdown-menu">
-                    <li><a href="https://www.sanixtech.in/mock_interviews.php">Mock Interview</a></li>
-                    <li><a href="https://www.sanixtech.in/data_engineer_interview_prep.php">Data Engineering</a></li>
-                    <li><a href="https://www.sanixtech.in/datascience_interview_prep.php">Data Science</a></li>
-                    <li><a href="https://www.sanixtech.in/web_development.php">Web Development</a></li>
-                    <li><a href="https://www.sanixtech.in/machine_learning_interview_prep.php">Machine Learning</a></li>
+                    <li><a href="https://www.sanixtech.in/training_certification.php">Training & Certification</a></li>
+                    <li><a href="https://www.sanixtech.in/mock_interviews.php">Mock Interviews & Career Help</a></li>
                 </ul>
             </li>
 
