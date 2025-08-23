@@ -48,6 +48,7 @@ $result = $stmt->get_result();
        <?php include('header.php'); ?> <!-- Include your common header -->
 
     <?php include 'navbar.php'; ?> <!-- includew your common navbar -->
+    <?php include 'job_post_drop_down_select.php'; ?>
 
 <div class="container-fluid my-5 px-0">
   <div class="row gx-0">
