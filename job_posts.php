@@ -73,7 +73,27 @@ $result = $stmt->get_result();
                         </ul>
                     </div>
                 </div>
+            </div> <!-- Module 2: Introduction to UI/UX -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="introHeading">
+                    <button class="accordion-button" type="button">
+                        data related
+                    </button>
+                </h2>
+                <div id="introModule" class="accordion-collapse collapse show" aria-labelledby="introHeading" data-bs-parent="#uiuxCourse">
+                    <div class="accordion-body">
+                        <ul>
+                            <li>python developer</li>
+                            <li>sql developer</li>
+                            <li>php developer</li>
+                            <li>react js developer</li>
+                            <li>java developer</li>
+                            <li>web developer</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
+
             </aside>
         <div class="col-md-7" style="border-right: 2px solid #ccc">
          <div id="html-description" class="p-3" style="background-color: #85bdc6ff">
