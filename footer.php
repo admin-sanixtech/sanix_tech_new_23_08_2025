@@ -16,9 +16,6 @@
                 </ul>
             </div>
 
-
-
-
             <!-- Address -->
             <div class="col-md-3 col-sm-6 mb-3">
                 <h5 class="text-uppercase">Address</h5>
@@ -73,23 +70,59 @@
                 All rights reserved
             </a>
         </div>
-        <!-- Modal -->
-        <div class="modal fade" id="rightsModal" tabindex="-1" aria-labelledby="rightsModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="rightsModalLabel">All Rights Reserved</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+</footer>
+
+<!-- Modal - Placed outside footer to avoid color inheritance -->
+<div class="modal fade" id="rightsModal" tabindex="-1" aria-labelledby="rightsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="rightsModalLabel">
+                    <i class="fas fa-copyright me-2"></i>All Rights Reserved - Sanix Technologies
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-dark">
+                <div class="row">
+                    <div class="col-12">
+                        <h6 class="text-primary mb-3"><i class="fas fa-shield-alt me-2"></i>Copyright Notice</h6>
+                        <p class="mb-3">
+                            All content, materials, images, logos, course content, and intellectual property displayed on this website are the exclusive property of <strong>Sanix Technologies</strong> and are protected under applicable copyright laws.
+                        </p>
+                        
+                        <h6 class="text-primary mb-3"><i class="fas fa-exclamation-triangle me-2"></i>Prohibited Activities</h6>
+                        <ul class="mb-3">
+                            <li>Unauthorized reproduction, distribution, or copying of any content</li>
+                            <li>Commercial use of materials without written permission</li>
+                            <li>Reverse engineering or extracting course materials</li>
+                            <li>Sharing login credentials or course access</li>
+                        </ul>
+                        
+                        <h6 class="text-primary mb-3"><i class="fas fa-balance-scale me-2"></i>Legal Information</h6>
+                        <p class="mb-3">
+                            This website and its content are protected by Indian and international copyright laws. 
+                            Any violation of these rights may result in legal action.
+                        </p>
+                        
+                        <h6 class="text-primary mb-3"><i class="fas fa-handshake me-2"></i>Permitted Use</h6>
+                        <p class="mb-0">
+                            Students enrolled in Sanix Technologies courses are granted limited access to course materials 
+                            for educational purposes only. All other uses require explicit written permission from Sanix Technologies.
+                        </p>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    All content, images, and intellectual property on this website are © Sanix Technologies.
-                     Unauthorized reproduction or distribution is strictly prohibited.
+            </div>
+            <div class="modal-footer bg-light">
+                <div class="text-center w-100">
+                    <small class="text-muted">
+                        For permissions or inquiries, contact: <strong>info@sanixtech.in</strong>
+                    </small>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
-                </div>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                    <i class="fas fa-check me-2"></i>I Understand
+                </button>
             </div>
         </div>
     </div>
-</footer>
+</div>
