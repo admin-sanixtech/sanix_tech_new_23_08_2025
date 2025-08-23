@@ -12,5 +12,5 @@ if ($category_id) {
     $conn->query("DELETE FROM categories WHERE category_id = $category_id");
 }
 
-header("Location: view_categories.php");
+header("Location: add_category.php");
 exit();

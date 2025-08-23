@@ -2,10 +2,24 @@
 session_start();
 $message = "";
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    include 'db_connection.php';
+require_once __DIR__ . '/db_connection.php';
 
+if (!isset($conn) || !$conn instanceof mysqli) {
+    die("DB connection not established.");
+}
+
+
+echo "DB file loaded. ";
+var_dump(isset($conn), $conn instanceof mysqli);
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['email']) && !empty($_POST['email'])) {
+        // ✅ Make sure $conn is available
+        if (!isset($conn)) {
+            die("<div class='error'>Database connection failed.</div>");
+        }
+
         $email = mysqli_real_escape_string($conn, $_POST['email']);
 
         // Check if user exists
@@ -39,6 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

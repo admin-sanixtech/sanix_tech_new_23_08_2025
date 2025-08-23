@@ -28,7 +28,7 @@ ob_end_flush();
 
 <!-- Content For Sidebar -->
 <div class="h-100">
-    <div class="sidebar-logo"><a href="#">Sanix Technology</a></div>
+    <div class="sidebar-logo"><a href="#">Sanix Technologies</a></div>
     <ul class="sidebar-nav">
         <li class="sidebar-header">Admin Elements</li>
         <li class="sidebar-item"><a href="users_details.php" class="sidebar-link">Users Details</a></li>
@@ -92,6 +92,7 @@ ob_end_flush();
                 <li class="sidebar-item"><a href="/admin/add_subcategory.php" class="sidebar-link">Add SubCategory</a></li>
                 <li class="sidebar-item"><a href="/admin/admin_add_projects.php" class="sidebar-link">Add Projects</a></li>
                 <li class="sidebar-item"><a href="/admin/admin_add_interviewers.php" class="sidebar-link">Add interviewers</a></li>
+                <li class="sidebar-item"><a href="/admin/admin_post_job.php" class="sidebar-link">Add job post</a></li>
             </ul>
         </li>
         <li class="sidebar-item"><a href="/admin/projects_view.php" class="sidebar-link">Projects</a></li>
@@ -100,7 +101,7 @@ ob_end_flush();
         <li class="sidebar-item"><a href="view_interview_exp.php" class="sidebar-link">Others Interview Experience</a></li>
         <li class="sidebar-item"><a href="withdrawal.php" class="sidebar-link">Withdrawal</a></li>
         <li class="sidebar-item"><a href="/admin/admin_progress_form.php" class="sidebar-link">my progress</a></li>
-
+        
         <li class="sidebar-header">Multi Level Menu</li>
         <li class="sidebar-item">
             <a href="#" class="sidebar-link collapsed" data-bs-target="#multi" data-bs-toggle="collapse" aria-expanded="false">
@@ -121,6 +122,15 @@ ob_end_flush();
                     <ul id="level-1" class="sidebar-dropdown list-unstyled collapse">
                         <li class="sidebar-item"><a href="/admin/send_news_email.php" class="sidebar-link">stock market News to users</a></li>
                         <li class="sidebar-item"><a href="/admin/admin_stock_analysis.php" class="sidebar-link">My Stock Market Analysis</a></li>
+                    </ul
+                </li>
+            </ul>
+            <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link collapsed" data-bs-target="#level-1" data-bs-toggle="collapse" aria-expanded="false">view</a>
+                    <ul id="level-1" class="sidebar-dropdown list-unstyled collapse">
+                        <li class="sidebar-item"><a href="/admin/admin_view_jobs.php" class="sidebar-link">view jobs posted</a></li>
+                        <li class="sidebar-item"><a href="/admin/view_user_progress.php" class="sidebar-link">user progress</a></li>
                     </ul
                 </li>
             </ul>

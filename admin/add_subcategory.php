@@ -68,16 +68,25 @@ $subrows = $subStmt->fetchAll(PDO::FETCH_ASSOC);
         <?php elseif (!empty($error)): ?>
             <div class="alert alert-danger"><?= $error ?></div>
         <?php endif; ?>
-
+         
         <form method="POST" class="row g-3 mb-5">
-            <div class="col-md-4">
-                <label class="form-label">Category</label>
+            <div class="col-md-4">  
+                <!-- Category Filter Dropdown -->
+                <label class="col-sm-2 col-form-label"> Category</label>
+                
+<select id="filter_category_id" name="category_id" class="form-select" required>
+                        <option value="">All Categories</option>
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?= $cat['category_id'] ?>"><?= htmlspecialchars($cat['category_name']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+               
+                        
+        <!--   <label class="form-label">Category</label>
                 <select name="category_id" class="form-select" required>
                     <option value="">Select…</option>
-                    <?php foreach ($categories as $cat): ?>
-                        <option value="<?= $cat['category_id'] ?>"><?= htmlspecialchars($cat['category_name']) ?></option>
-                    <?php endforeach; ?>
-                </select>
+                   
+                </select>  -->
             </div>
 
             <div class="col-md-4">
@@ -89,7 +98,7 @@ $subrows = $subStmt->fetchAll(PDO::FETCH_ASSOC);
                 <button type="submit" name="add_subcategory" class="btn btn-primary w-100">Add</button>
             </div>
         </form>
-
+            
         <h3 class="mb-3">Existing Sub‑categories</h3>
         <table id="sub_table" class="table table-striped align-middle">
             <thead>
@@ -122,11 +131,13 @@ $subrows = $subStmt->fetchAll(PDO::FETCH_ASSOC);
 
 <!-- AJAX refresh when category dropdown changes -->
 <script>
-$('#category_id').on('change', function () {
-    $.post('fetch_subcategories.php', {category_id: this.value}, function (html) {
+$('#filter_category_id').on('change', function () {
+    const cid = this.value;
+    $.post('fetch_subcategories.php', { category_id: cid }, function (html) {
         $('#sub_table tbody').html(html);
     });
 });
 </script>
+
 </body>
 </html>
