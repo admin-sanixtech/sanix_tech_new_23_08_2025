@@ -224,7 +224,7 @@ ob_end_flush();
                     <li class="sidebar-item">
                         <a href="#" class="sidebar-link" data-bs-toggle="modal" data-bs-target="#approveModal">
                             <i class="fa-regular fa-user pe-2"></i>Approve 
-                            <span class="badge bg-danger">25</span>
+                            <span class="badge bg-danger">10</span>
                         </a>
                     </li>
                     
@@ -256,6 +256,7 @@ ob_end_flush();
                     <li class="sidebar-item"><a href="view_interview_exp.php" class="sidebar-link">Others Interview Experience</a></li>
                     <li class="sidebar-item"><a href="withdrawal.php" class="sidebar-link">Withdrawal</a></li>
                     <li class="sidebar-item"><a href="/admin/admin_progress_form.php" class="sidebar-link">My Progress</a></li>
+                    <li class="sidebar-item"><a href="/admin/send_news_email.php" class="sidebar-link">news Emails</a></li>
                 </ul>
             </div>
     </div>

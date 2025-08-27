@@ -1,17 +1,31 @@
 <?php 
+// Start session at the very beginning
+session_start();
+
 require_once 'db_connection.php';
 
 // Enable error reporting for debugging
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Fetch all categories with their images
-$query = "SELECT category_id, category_name, category_image FROM categories ORDER BY category_name";
-$result = $conn->query($query);
-
-if (!$result) {
-    die("Query failed: " . $conn->error);
+// Debug: Check database connection
+if (!$conn) {
+    die("Database connection failed!");
 }
+
+// Fetch all categories with their images - use unique variable name
+$categories_query = "SELECT category_id, category_name, category_image FROM categories ORDER BY category_name";
+$categories_result = $conn->query($categories_query);
+
+// Debug: Check query execution
+if (!$categories_result) {
+    echo "<div class='alert alert-danger'>Categories query failed: " . $conn->error . "</div>";
+    die();
+}
+
+// Debug: Check number of rows
+$categoryCount = $categories_result->num_rows;
+echo "<!-- Debug: Found $categoryCount categories -->";
 
 // Define absolute paths for images
 $baseURL = 'https://www.sanixtech.in/';
@@ -94,8 +108,8 @@ $fallbackImage = $baseURL . 'assets/no-image.png';
         </div>
     </div>
 
-    <?php include('header.php'); ?>
-    <?php include('navbar.php'); ?>
+    <?php include 'admin_menu.php'; ?>
+    <?php include 'admin_navbar.php'; ?>
 
     <div class="container my-5">
         <div class="row mb-4">
@@ -106,18 +120,35 @@ $fallbackImage = $baseURL . 'assets/no-image.png';
         </div>
         
         <div class="row" id="categoriesContainer">
-            <?php if ($result && $result->num_rows > 0): ?>
-                <?php while ($row = $result->fetch_assoc()): ?>
+            <!-- Debug Information -->
+            <div class="col-12 mb-3">
+                <div class="alert alert-info">
+                    <strong>Debug Info:</strong> 
+                    Categories found: <?php echo $categories_result ? $categories_result->num_rows : 0; ?><br>
+                    Database connection: <?php echo $conn ? 'Connected' : 'Failed'; ?><br>
+                    Categories Query: <?php echo htmlspecialchars($categories_query); ?>
+                </div>
+            </div>
+
+            <?php if ($categories_result && $categories_result->num_rows > 0): ?>
+                <?php while ($category = $categories_result->fetch_assoc()): ?>
+                    <!-- Debug: Show raw data -->
+                    <!-- Category ID: <?php echo $category['category_id']; ?>, Name: <?php echo $category['category_name']; ?>, Image: <?php echo $category['category_image']; ?> -->
+                    
                     <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
                         <div class="card category-card" 
-                             data-category-id="<?php echo htmlspecialchars($row['category_id']); ?>"
-                             onclick="navigateToCategory(<?php echo htmlspecialchars($row['category_id']); ?>)">
+                             data-category-id="<?php echo htmlspecialchars($category['category_id']); ?>"
+                             onclick="navigateToCategory(<?php echo htmlspecialchars($category['category_id']); ?>)">
                             <div class="card-img-container">
-                                <?php if (!empty($row['category_image'])): ?>
-                                    <img src="<?php echo $imageBasePath . htmlspecialchars($row['category_image']); ?>"
+                                <?php if (!empty($category['category_image'])): ?>
+                                    <?php 
+                                    $imagePath = $imageBasePath . htmlspecialchars($category['category_image']);
+                                    echo "<!-- Image path: $imagePath -->";
+                                    ?>
+                                    <img src="<?php echo $imagePath; ?>"
                                          class="card-img-top"
-                                         alt="<?php echo htmlspecialchars($row['category_name']); ?>"
-                                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                         alt="<?php echo htmlspecialchars($category['category_name']); ?>"
+                                         onerror="console.log('Failed to load:', this.src); this.style.display='none'; this.nextElementSibling.style.display='flex';">
                                     <div class="no-image-placeholder" style="display: none;">
                                         <i class="fas fa-image fa-2x"></i><br>
                                         <small>No Image</small>
@@ -131,7 +162,7 @@ $fallbackImage = $baseURL . 'assets/no-image.png';
                             </div>
                             <div class="card-body p-2">
                                 <h5 class="card-title">
-                                    <?php echo htmlspecialchars($row['category_name']); ?>
+                                    <?php echo htmlspecialchars($category['category_name']); ?>
                                 </h5>
                             </div>
                         </div>
@@ -139,9 +170,11 @@ $fallbackImage = $baseURL . 'assets/no-image.png';
                 <?php endwhile; ?>
             <?php else: ?>
                 <div class="col-12">
-                    <div class="alert alert-info text-center">
-                        <i class="fas fa-info-circle me-2"></i>
-                        No categories found. Please check your database connection.
+                    <div class="alert alert-warning text-center">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>No categories found!</strong><br>
+                        <small>This is strange since you have 23 categories in your database.</small><br>
+                        <small>The issue might be that another query is overwriting the categories result.</small>
                     </div>
                 </div>
             <?php endif; ?>
@@ -153,16 +186,22 @@ $fallbackImage = $baseURL . 'assets/no-image.png';
             <div class="col-12">
                 <div class="alert alert-secondary">
                     <h5>Debug Information:</h5>
-                    <p><strong>Total Categories:</strong> <?php echo $result ? $result->num_rows : 0; ?></p>
+                    <p><strong>Total Categories:</strong> <?php echo $categories_result ? $categories_result->num_rows : 0; ?></p>
                     <p><strong>Base URL:</strong> <?php echo $baseURL; ?></p>
                     <p><strong>Image Base Path:</strong> <?php echo $imageBasePath; ?></p>
+                    <p><strong>Categories Query:</strong> <?php echo htmlspecialchars($categories_query); ?></p>
                 </div>
             </div>
         </div>
         <?php endif; ?>
     </div>
-
-    <?php include('footer.php'); ?>
+    
+    <?php 
+    // Include footer only if it exists
+    if (file_exists('admin_footer.php')) {
+        include 'admin_footer.php';
+    }
+    ?>
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
@@ -207,8 +246,22 @@ $fallbackImage = $baseURL . 'assets/no-image.png';
 </html>
 
 <?php
-// Close the database connection
+// Safe database connection closing with error handling
 if (isset($conn)) {
-    $conn->close();
+    try {
+        // Check if the connection is still active before attempting to close
+        if ($conn instanceof mysqli) {
+            // Use @ to suppress warnings and check connection status
+            if (@$conn->ping()) {
+                $conn->close();
+            }
+        }
+    } catch (Error $e) {
+        // Connection was already closed - this is fine, just ignore
+        // Optionally log this for debugging: error_log("DB connection already closed: " . $e->getMessage());
+    } catch (Exception $e) {
+        // Handle any other database exceptions
+        // Optionally log this: error_log("Error closing DB connection: " . $e->getMessage());
+    }
 }
 ?>

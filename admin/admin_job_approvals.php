@@ -1,5 +1,5 @@
 <?php
-// Enable error reporting for debugging
+// admin_job_approvals.php
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 

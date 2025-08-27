@@ -1,4 +1,5 @@
 <?php
+// admin_create_post.php
 session_start();
 include 'db_connection.php'; // Database connection
 
@@ -24,9 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = isset($_POST['content']) ? $_POST['content'] : '';
     $action = isset($_POST['action']) ? $_POST['action'] : 'publish';
     
-    // Set status based on action
-    $status = ($action === 'draft') ? 'pending' : 'approved';
-    $published_at = ($action === 'publish') ? date('Y-m-d H:i:s') : null;
+    // CHANGED: All posts go to pending status first, regardless of who creates them
+    $status = 'pending'; // Always pending for approval workflow
+    $published_at = null; // Will be set when actually approved and published
     
     // Calculate word count and reading time
     $word_count = str_word_count(strip_tags($content));
@@ -79,17 +80,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->execute()) {
             $post_id = $conn->insert_id;
             
+            // CHANGED: Update success message to reflect pending status
+            $success_message = ($action === 'draft') 
+                ? 'Post saved as draft successfully!' 
+                : 'Post submitted successfully and is now pending approval!';
+            
             if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
                 // AJAX request
                 header('Content-Type: application/json');
                 echo json_encode([
                     'success' => true, 
-                    'message' => 'Post ' . ($action === 'draft' ? 'saved as draft' : 'published') . ' successfully!',
-                    'post_id' => $post_id
+                    'message' => $success_message,
+                    'post_id' => $post_id,
+                    'status' => $status
                 ]);
                 exit;
             } else {
-                $message = "<div class='alert alert-success'>Post " . ($action === 'draft' ? 'saved as draft' : 'published') . " successfully!</div>";
+                $message = "<div class='alert alert-success'>$success_message</div>";
             }
         } else {
             $error_msg = "Database Error: " . $stmt->error;
@@ -363,6 +370,18 @@ if (isset($_GET['category_id']) && !isset($_POST['title'])) {
         .progress-container {
             margin-top: 20px;
         }
+
+        .status-notification {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .status-notification .fa-info-circle {
+            color: #ffc107;
+        }
     </style>
 </head>
 <body>
@@ -382,6 +401,18 @@ if (isset($_GET['category_id']) && !isset($_POST['title'])) {
                         </h2>
                     </div>
                     <div class="card-body">
+                        
+                        <!-- Status notification -->
+                        <div class="status-notification">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-info-circle fa-lg me-3"></i>
+                                <div>
+                                    <strong>Approval Process:</strong>
+                                    <p class="mb-0">All posts, including admin-created posts, require approval before being published. 
+                                    Your post will be submitted with "Pending" status and needs to be approved through the post management system.</p>
+                                </div>
+                            </div>
+                        </div>
                         
                         <!-- Success/Error Messages -->
                         <div id="message-container">
@@ -537,7 +568,7 @@ if (isset($_GET['category_id']) && !isset($_POST['title'])) {
                                         <i class="fas fa-save me-2"></i>Save as Draft
                                     </button>
                                     <button type="submit" class="btn btn-primary" id="publishBtn">
-                                        <i class="fas fa-paper-plane me-2"></i>Publish Post
+                                        <i class="fas fa-paper-plane me-2"></i>Submit for Approval
                                     </button>
                                 </div>
                                 
@@ -901,21 +932,15 @@ function submitPost(action) {
         if (data.success) {
             showMessage(data.message, 'success');
             
-            // Reset form if published successfully
             if (action === 'publish') {
                 setTimeout(() => {
-                    // Option 1: Redirect to posts list
-                    // window.location.href = 'admin_posts.php';
-                    
-                    // Option 2: Reset form for another post
-                    if (confirm('Post published successfully! Would you like to create another post?')) {
+                    if (confirm('Post submitted successfully and is now pending approval! Would you like to create another post?')) {
                         resetForm();
                     } else {
                         window.location.href = 'admin_posts.php';
                     }
                 }, 2000);
             } else {
-                // For draft, just show success message
                 setTimeout(() => {
                     resetForm();
                 }, 2000);
