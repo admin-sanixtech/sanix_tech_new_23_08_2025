@@ -60,29 +60,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 24px;
         }
 
-        .nav-menu {
-            text-align: center;
-            padding: 10px;
-            background-color: #444;
-        }
-
-        .nav-menu ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-menu ul li {
-            display: inline;
-            margin: 0 15px;
-        }
-
-        .nav-menu ul li a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-        }
-
+      
+           
         .contact-container {
             width: 400px;
             margin: 50px auto;

@@ -1,4 +1,5 @@
 <?php
+// get_subcategories.php
 include 'db_connection.php';
 
 ini_set('display_errors', 1);
@@ -43,3 +44,5 @@ if (isset($_GET['category_id']) && !empty($_GET['category_id'])) {
 
 $conn->close();
 ?>
+
+

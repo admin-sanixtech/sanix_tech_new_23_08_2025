@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +5,6 @@
     <title>Sanix Technologies</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-
     <link rel="stylesheet" href="css/user_styles.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
@@ -19,12 +17,14 @@
 </head>
 <body>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <?php include 'navbar.php'; ?> <!-- includew your common navbar -->
-    <?php include('header.php'); ?> <!-- Include your common header -->
+       <?php include('header.php'); ?> <!-- Include your common header -->
 
-<div class="container my-5 d-flex justify-content-center">
-  <div class="center-accordion">
+      <?php include 'navbar.php'; ?> <!-- includew your common navbar -->
+
+  <div class="container-fluid my-5 px-0">
+  <div class="row gx-0">
+     <!-- Sidebar Accordion -->
+    <aside class="col-md-3 px-3"> 
     <h2 class="text-center mb-4">Data Science Course Content</h2>
 
     <div class="accordion" id="dataScienceCourse">
@@ -189,7 +189,25 @@
         </div>
 
     </div>
+</aside>
   </div>
 </div>
+<script>
+ // Handle list item click
+  document.querySelectorAll('.accordion-body li').forEach(item => {
+    item.style.cursor = 'pointer';
+    item.addEventListener('click', function () {
+      const text = this.textContent.trim();
+      const content = contentMap[text] || `<h4>${text}</h4><p>Details coming soon...</p>`;
+      document.getElementById('contentDisplay').innerHTML = content;
+
+      // Optional: Visually highlight the active item
+      document.querySelectorAll('.accordion-body li').forEach(li => li.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
 
 <?php include('footer.php'); ?> <!-- Include your common footer -->
+</body>
+</html>

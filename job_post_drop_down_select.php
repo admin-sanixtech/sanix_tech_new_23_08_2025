@@ -11,7 +11,6 @@
                 <option value="bangalore">Bangalore</option>
                 <option value="chennai">Chennai</option>
                 <option value="kolkata">Kolkata</option>
-                <option value="Hyderabad">Hyderabad</option>
             </select>
         </div>
         <div class="col-md-2">

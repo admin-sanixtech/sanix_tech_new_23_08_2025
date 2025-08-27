@@ -1,3 +1,10 @@
+<html lang="en">
+  <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/cards_styles.css?v=<?php echo time(); ?>">
+ </head>
+  <body>
+
 <div class="container mt-5">
     <div class="row">
         <!-- Data Engineering -->
@@ -7,7 +14,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Data Engineering</h5>
                     <p class="card-text">Build robust and scalable data pipelines and warehouses tailored for your enterprise needs using cutting-edge technologies.</p>
-                    <a href="#" class="btn btn-primary">Explore Service</a>
+                    <a href="https://www.sanixtech.in/data_engineering.php" class="btn btn-primary">Explore Service</a>
                 </div>
             </div>
         </div>
@@ -19,7 +26,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Cloud Services</h5>
                     <p class="card-text">Leverage AWS, Azure, and GCP for secure, scalable, and cost-efficient cloud solutions across all environments.</p>
-                    <a href="#" class="btn btn-primary">Explore Service</a>
+                    <a href="https://www.sanixtech.in/cloud_service.php" class="btn btn-primary">Explore Service</a>
                 </div>
             </div>
         </div>
@@ -31,7 +38,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Industrial Grade Project Solutions</h5>
                     <p class="card-text">Delivering high-quality, real-world industry projects with end-to-end lifecycle implementation.</p>
-                    <a href="#" class="btn btn-primary">Explore Service</a>
+                    <a href="https://www.sanixtech.in/industry_st_projects.php" class="btn btn-primary">Explore Service</a>
                 </div>
             </div>
         </div>
@@ -43,7 +50,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Training & Certification</h5>
                     <p class="card-text">Hands-on training programs and certification preparation for trending tech domains led by experts.</p>
-                    <a href="#" class="btn btn-primary">Explore Service</a>
+                    <a href="https://www.sanixtech.in/training_certification.php" class="btn btn-primary">Explore Service</a>
                 </div>
             </div>
         </div>
@@ -55,7 +62,7 @@
                 <div class="card-body">
                     <h5 class="card-title">IT Staffing & Consulting</h5>
                     <p class="card-text">Flexible staffing models and strategic consulting services tailored for your business goals.</p>
-                    <a href="#" class="btn btn-primary">Explore Service</a>
+                    <a href="https://www.sanixtech.in/it_staffing.php" class="btn btn-primary">Explore Service</a>
                 </div>
             </div>
         </div>
@@ -67,7 +74,7 @@
                 <div class="card-body">
                     <h5 class="card-title">Mock Interviews & Career Help</h5>
                     <p class="card-text">Sharpen your interview skills and get personalized career guidance to land your dream job.</p>
-                    <a href="#" class="btn btn-primary">Explore Service</a>
+                    <a href="https://www.sanixtech.in/mock_interviews.php" class="btn btn-primary">Explore Service</a>
                 </div>
             </div>
         </div>

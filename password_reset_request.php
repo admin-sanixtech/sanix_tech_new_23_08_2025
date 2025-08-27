@@ -2,12 +2,15 @@
 session_start();
 $message = "";
 
-require_once __DIR__ . '/db_connection.php';
+// Include DB connection
+include 'db_connection.php'; // this sets up $conn
 
-if (!isset($conn) || !$conn instanceof mysqli) {
+//require_once __DIR__ . '/db_connection.php';
+
+// Check if $conn is set and connected
+if (!isset($conn) || !$conn || $conn->connect_error) {
     die("DB connection not established.");
 }
-
 
 echo "DB file loaded. ";
 var_dump(isset($conn), $conn instanceof mysqli);

@@ -99,7 +99,7 @@
                     <!-- Core Services -->
                     <li class="dropdown-submenu position-relative">
                             <div class="submenu-toggle">
-                              <a href="https://www.sanixtech.in/python_course.php">Web Development</a>
+                              <a href="https://www.sanixtech.in/web_development.php">Web Development</a>
                                 <i class="bi bi-caret-right-fill"></i>
                             </div>
                             <ul class="submenu" id="submenu-web">
@@ -117,8 +117,8 @@
                             </div>
                             <ul class="submenu" id="submenu-Pro">
                                 <li><a href="https://www.sanixtech.in/data_migration.php">Data Migration Services</a></li>
-                                <li><a href="#">Trainings</a></li>
-                                <li><a href="#">Academic Projects</a></li>
+                                <li><a href="https://www.sanixtech.in/trainings.php">Trainings</a></li>
+                                <li><a href="https://www.sanixtech.in/academic_projects.php">Academic Projects</a></li>
                             </ul>
 
                      </li> 
@@ -131,7 +131,6 @@
                                 <li><a href="https://www.sanixtech.in/custom_solutions.php">Custom Software Solutions</a></li>
                                 <li><a href="https://www.sanixtech.in/qa_engineering.php">QA & Software Testing</a></li>
                                 <li><a href="https://www.sanixtech.in/product_engineering.php">Software Product Engineering</a></li>
-                                <li><a href="https://www.sanixtech.in/app_dev_maintenance.php">App Development & Maintenance</a></li>
                                 <li><a href="https://www.sanixtech.in/internship_placement.php">Internship & Placement</a></li>                    
                                 <li><a href="https://www.sanixtech.in/cybersecurity.php">Cybersecurity Services</a></li>
                                 <li><a href="https://www.sanixtech.in/enterprise_integration.php">Enterprise Apps & Integrations</a></li>
@@ -167,9 +166,9 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Interview Preparation</a>
                 <ul class="dropdown-menu">
                     <li><a href="https://www.sanixtech.in/training_certification.php">Training & Certification</a></li>
-                    <li><a href="https://www.sanixtech.in/interview_preparation.php">Interview Preparation</a></li>
                     <li><a href="https://www.sanixtech.in/mock_interviews.php">Mock Interviews & Career Help</a></li>
                     <li><a href="https://www.sanixtech.in/job_posts.php">Jobs</a></li>
+
                 </ul>
             </li>
 
