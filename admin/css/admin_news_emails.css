@@ -1,0 +1,137 @@
+.email-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+        }
+        
+        .email-card .card-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px 15px 0 0 !important;
+        }
+        
+        .page-header {
+            background: linear-gradient(135deg, rgba(13, 110, 253, 0.1), rgba(102, 16, 242, 0.1));
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .approval-required {
+            border-left: 4px solid #ffc107;
+            background: rgba(255, 193, 7, 0.1);
+        }
+        
+        .approved {
+            border-left: 4px solid #28a745;
+            background: rgba(40, 167, 69, 0.1);
+        }
+        
+        .rejected {
+            border-left: 4px solid #dc3545;
+            background: rgba(220, 53, 69, 0.1);
+        }
+        
+        .draft-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .draft-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        
+        .flagged-content {
+            background: rgba(220, 53, 69, 0.1);
+            border: 1px solid rgba(220, 53, 69, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1060;
+        }
+        
+        .mce-content-body {
+            background: #fff !important;
+            color: #333 !important;
+        }
+        
+        .tox .tox-edit-area {
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .tox .tox-toolbar {
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .btn-send {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-send:hover {
+            background: linear-gradient(135deg, #218838, #1aa179);
+            transform: translateY(-1px);
+        }
+        
+        .btn-approve {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        
+        .btn-reject {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+        }
+        
+        .user-select-container {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.1);
+        }
+        
+        .user-checkbox {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+        
+        .user-checkbox:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 1rem;
+            }
+            
+            .draft-item {
+                padding: 1rem;
+            }
+        }

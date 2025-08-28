@@ -8,8 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 include 'db_connection.php'; // Adjust the path as necessary
 
 // Fetch counts for items needing approval
-$pending_User_Questions_Count = $conn->query("SELECT COUNT(*) as count FROM quiz_questions WHERE status = 'pending'")->fetch_assoc()['count'];
-$pendingUserPostCount = $conn->query("SELECT COUNT(*) as count FROM posts  WHERE status = 'pending'")->fetch_assoc()['count'];
+$pending_User_Post_Count = $conn->query("SELECT COUNT(*) as count FROM posts  WHERE status = 'pending'")->fetch_assoc()['count'];
 
 // Count of unapproved books
 $unapprovedBooks = $conn->query("SELECT COUNT(*) as count FROM user_books WHERE approved = 0");
@@ -26,6 +25,7 @@ $pendingUserInterviewExpCount = $conn->query("SELECT COUNT(*) as count FROM user
 
 // Count of unapproved job post
 $pending_job_approval_Count = $conn->query("SELECT COUNT(*) as count FROM job_post WHERE status = 'pending'")->fetch_assoc()['count'];
+$pending_User_quiz_question_approval_Count = $conn->query("SELECT COUNT(*) as count FROM quiz_questions WHERE status = 'pending'")->fetch_assoc()['count'];
 ob_end_flush();
 ?>
 
@@ -305,39 +305,44 @@ ob_end_flush();
                 <div class="modal-body">
                     <div class="content-grid">
                         <a href="/admin/approve_user_questions.php" class="content-box">
-                            <span class="badge bg-warning"><?php echo $pending_User_Questions_Count ?></span>
+                            <span class="badge bg-warning"><?php echo $pending_User_quiz_question_approval_Count?></span>
                             <i class="fa-solid fa-question-circle"></i>
-                            <h5>User Questions</h5>
+                            <h5>Approve Quiz Questions</h5>
                         </a>
                         <a href="/admin/approve_user_posts.php" class="content-box">
-                            <span class="badge bg-warning">3</span>
+                            <span class="badge bg-warning"><?php echo $pending_User_Post_Count ?></span>
                             <i class="fa-solid fa-edit"></i>
-                            <h5>User Posts</h5>
+                            <h5>Approve Posts</h5>
                         </a>
                         <a href="/admin/approve_user_books.php" class="content-box">
                             <span class="badge bg-warning">7</span>
                             <i class="fa-solid fa-book"></i>
-                            <h5>User Books</h5>
+                            <h5>Approve Books</h5>
                         </a>
                         <a href="/admin/approve_user_cheatsheets.php" class="content-box">
                             <span class="badge bg-warning">2</span>
                             <i class="fa-solid fa-file-text"></i>
-                            <h5>User Cheatsheet</h5>
+                            <h5>Approve Cheatsheet</h5>
                         </a>
                         <a href="/admin/approve_user_testimonials.php" class="content-box">
                             <span class="badge bg-warning">4</span>
                             <i class="fa-solid fa-star"></i>
-                            <h5>User Testimonial</h5>
+                            <h5>Approve Testimonial</h5>
                         </a>
                         <a href="/admin/approve_user_interview_exp.php" class="content-box">
                             <span class="badge bg-warning">4</span>
                             <i class="fa-solid fa-user-tie"></i>
-                            <h5>Interview Experience</h5>
+                            <h5>Approve Interview Experience</h5>
                         </a>
                         <a href="/admin/admin_job_approvals.php" class="content-box">
                             <span class="badge bg-warning"><?php echo $pending_job_approval_Count ?></span>
                             <i class="fa-solid fa-briefcase"></i>
-                            <h5>Job Approvals</h5>
+                            <h5>Approve Job Post</h5>
+                        </a>
+                        <a href="/admin/approve_news_email.php" class="content-box">
+                            <span class="badge bg-warning"><?php echo $pending_job_approval_Count ?></span>
+                            <i class="fa-solid fa-briefcase"></i>
+                            <h5>Approve News Emails</h5>
                         </a>
                     </div>
                 </div>
@@ -389,7 +394,7 @@ ob_end_flush();
                     <div class="content-grid">
                         <a href="/admin/admin_add_question.php" class="content-box">
                             <i class="fa-solid fa-question-circle"></i>
-                            <h5>Add Questions</h5>
+                            <h5>Add Quiz Questions</h5>
                         </a>
                         <a href="/admin/admin_create_post.php" class="content-box">
                             <i class="fa-solid fa-edit"></i>

@@ -1,168 +1,123 @@
-<?php include('header.php'); ?> <!-- Include your common header -->
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-<div class="container my-5">
-    <h2 class="text-center mb-4">C Programming Course Content</h2>
+require 'db_connection.php'; // adjust path
 
-    <div class="accordion" id="cCourse">
-        <!-- Module 1 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#moduleOne" aria-expanded="true" aria-controls="moduleOne">
-                    Module 1: Introduction to C Programming
-                </button>
-            </h2>
-            <div id="moduleOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#cCourse">
-                <div class="accordion-body">
-                    <ul>
-                        <li>History and Features of C</li>
-                        <li>Structure of a C Program</li>
-                        <li>Compiling and Executing a Program</li>
-                        <li>Basic Input and Output</li>
-                        <li>Data Types and Variables</li>
-                        <li>Constants and Operators</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+// Example: fetch only Digital Marketing posts
+// Inside c_course.php
+$category_id = 20; 
 
-        <!-- Module 2 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingTwo">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#moduleTwo" aria-expanded="false" aria-controls="moduleTwo">
-                    Module 2: Control Flow
-                </button>
-            </h2>
-            <div id="moduleTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#cCourse">
-                <div class="accordion-body">
-                    <ul>
-                        <li>Conditional Statements (if, else, switch)</li>
-                        <li>Loops (while, do-while, for)</li>
-                        <li>break and continue</li>
-                        <li>goto Statement</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+$sql = "SELECT * FROM posts WHERE category_id = $category_id";
 
-        <!-- Module 3 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingThree">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#moduleThree" aria-expanded="false" aria-controls="moduleThree">
-                    Module 3: Functions in C
-                </button>
-            </h2>
-            <div id="moduleThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#cCourse">
-                <div class="accordion-body">
-                    <ul>
-                        <li>Function Declaration and Definition</li>
-                        <li>Function Calling</li>
-                        <li>Passing Arguments (Call by Value & Reference)</li>
-                        <li>Recursion</li>
-                        <li>Storage Classes</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+/*$sql = "SELECT * FROM posts WHERE category_id = 20"; */
 
-        <!-- Module 4 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingFour">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#moduleFour" aria-expanded="false" aria-controls="moduleFour">
-                    Module 4: Arrays and Strings
-                </button>
-            </h2>
-            <div id="moduleFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#cCourse">
-                <div class="accordion-body">
-                    <ul>
-                        <li>One-Dimensional Arrays</li>
-                        <li>Two-Dimensional Arrays</li>
-                        <li>Strings and String Handling Functions</li>
-                        <li>Array of Strings</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+$result = $conn->query($sql);
 
-        <!-- Module 5 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingFive">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#moduleFive" aria-expanded="false" aria-controls="moduleFive">
-                    Module 5: Pointers in C
-                </button>
-            </h2>
-            <div id="moduleFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#cCourse">
-                <div class="accordion-body">
-                    <ul>
-                        <li>Introduction to Pointers</li>
-                        <li>Pointer Arithmetic</li>
-                        <li>Pointers and Functions</li>
-                        <li>Pointers and Arrays</li>
-                        <li>Dynamic Memory Allocation</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+if (!$result) {
+    die("Query failed: " . $conn->error);
+}
+$firstRow = null;
+if ($result && $result->num_rows > 0) {
+    $result->data_seek(0);
+    $firstRow = $result->fetch_assoc();
+    $result->data_seek(0); // reset pointer for loop
+}
 
-        <!-- Module 6 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingSix">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#moduleSix" aria-expanded="false" aria-controls="moduleSix">
-                    Module 6: Structures and Unions
-                </button>
-            </h2>
-            <div id="moduleSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#cCourse">
-                <div class="accordion-body">
-                    <ul>
-                        <li>Defining Structures</li>
-                        <li>Arrays of Structures</li>
-                        <li>Nested Structures</li>
-                        <li>Pointers to Structures</li>
-                        <li>Unions and Their Usage</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+?>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanix Technologies</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="css/user_styles.css?v=<?php echo time(); ?>">
 
-        <!-- Module 7 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingSeven">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#moduleSeven" aria-expanded="false" aria-controls="moduleSeven">
-                    Module 7: File Handling
-                </button>
-            </h2>
-            <div id="moduleSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#cCourse">
-                <div class="accordion-body">
-                    <ul>
-                        <li>File Types and Operations</li>
-                        <li>Opening and Closing Files</li>
-                        <li>Reading and Writing to Files</li>
-                        <li>File Pointers and Modes</li>
-                        <li>Command Line Arguments</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+       <?php include('header.php'); ?> <!-- Include your common header -->
 
-        <!-- Module 8 -->
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="headingEight">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#moduleEight" aria-expanded="false" aria-controls="moduleEight">
-                    Module 8: C Projects and Practice
-                </button>
-            </h2>
-            <div id="moduleEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#cCourse">
-                <div class="accordion-body">
-                    <ul>
-                        <li>Mini Projects Using C</li>
-                        <li>Building CLI Applications</li>
-                        <li>Debugging and Error Handling</li>
-                        <li>Interview Practice Questions</li>
-                        <li>Practical Assignments</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
+      <?php include 'navbar.php'; ?> <!-- includew your common navbar -->
+
+<div class="container-fluid my-5 px-0">
+  <div class="row gx-0">
+     <!-- Sidebar Accordion -->
+    <aside class="col-md-3 px-0" > 
+    <h4 class="text-center mb-4">C course content</h4>
+
+   <div class="accordion" id="sqlAccordion">
+           <div class="accordion-body">
+                <ul>
+                    <?php if ($result && $result->num_rows > 0): ?>
+                    <?php while($row = $result->fetch_assoc()): ?>
+                      <li class="topic-link" data-title="<?php echo htmlspecialchars($row['title']); ?>">
+                    <?php echo htmlspecialchars($row['title']); ?>
+                      </li>
+                    
+                    
+                    <?php endwhile; ?>
+                      <?php else: ?>
+                          <li>No topics found</li>
+                      <?php endif; ?>
+                </ul>
+
+          </div>
+ 
+    </aside>
+<div class="col-md-7" style="border-right: 2px solid #ccc">
+         <div id="html-description" class="p-3" style="background-color: #85bdc6ff">
+  <?php if ($firstRow): ?>
+      <h3><?php echo htmlspecialchars($firstRow['title']); ?></h3>
+      <p><?php echo htmlspecialchars($firstRow['description']); ?></p>
+  <?php else: ?>
+      <h3 class="heading">Select a topic to view details here</h3>
+  <?php endif; ?>
 </div>
 
-<?php include('footer.php'); ?> <!-- Include your common footer -->
+
+            </div>
+              <?php include('right_sidebar.php'); ?>
+
+  </div>
+</div>
+<?php include('footer.php'); ?>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const items = document.querySelectorAll(".topic-link");
+    const descriptionBox = document.getElementById("html-description");
+
+    // Attach click listeners to all list items
+    items.forEach(function(item) {
+        item.addEventListener("click", function() {
+            let title = this.getAttribute("data-title");
+
+            fetch("course_description.php?title=" + encodeURIComponent(title))
+                .then(response => response.text())
+                .then(data => {
+                    descriptionBox.innerHTML = data;
+
+                    // Remove active class from all
+                    items.forEach(li => li.classList.remove("active-topic"));
+
+                    // Highlight clicked one
+                    this.classList.add("active-topic");
+                })
+             
+        });
+    });
+
+    
+});
+</script>
+
+
+</body>
+</html>
