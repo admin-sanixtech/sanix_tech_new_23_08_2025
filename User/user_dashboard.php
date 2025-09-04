@@ -99,7 +99,7 @@ $photoPath = !empty($user['photo']) ? 'uploads/' . htmlspecialchars($user['photo
         <main class="content px-3 py-2">
             <div class="container-fluid">
                 <div class="mb-3">
-                    <h4>Welcome, <?= htmlspecialchars($user['name']); ?></h4>
+                    <h4>Welcome, <?= htmlspecialchars($user['username']); ?></h4>
                 </div>
 
                 <?php include 'user_dashboard_cnt.php'; ?>

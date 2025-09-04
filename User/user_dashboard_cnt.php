@@ -58,7 +58,7 @@ $total_post_count = mysqli_fetch_assoc($total_post_Result)['total_post_count'];
 
 // Fetch questions attended by users
 $attendedQuestionsQuery = "
-    SELECT u.name as user_name, q.question_text 
+    SELECT u.username as user_name, q.question_text 
     FROM quiz_results r
     JOIN users u ON r.user_id = u.user_id
     JOIN quiz_questions q ON r.question_id = q.question_id

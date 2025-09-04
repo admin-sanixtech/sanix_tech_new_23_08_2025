@@ -22,13 +22,13 @@
 <div class="wrapper">
     <!-- Sidebar -->
     <aside id="sidebar" class="js-sidebar">
-        <?php include 'admin_menu.php'; ?>
+         <?php include '../../admin_menu.php'; ?>
     </aside>
     
     <!-- Main Content -->
     <div class="main">
         <!-- Top Navigation -->
-        <?php include 'admin_navbar.php'; ?>
+        <?php include '../../admin_navbar.php'; ?>
         
         <main class="content px-3 py-4">
             <div class="container-fluid">

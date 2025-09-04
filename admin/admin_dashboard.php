@@ -6,12 +6,18 @@ session_start();
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: https://www.sanixtech.in/login.php");
     exit;
 }
 
-// Include database connection
-include 'db_connection.php';
+// Include your database connection
+$database_path = __DIR__ . '/config/db_connection.php';
+
+if (file_exists($database_path)) {
+    include $database_path;
+} else {
+    die("Error: db_connection.php File not found from admin_menu.php at $database_path");
+}
 
 // Fetch user information
 $userId = $_SESSION['user_id'];
@@ -50,6 +56,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_photo'])) {
         exit;
     }
 }
+
+// Fetch counts users total
+$total_User_Count = $conn->query("SELECT COUNT(*) as count FROM users")->fetch_assoc()['count'];
+
+// Fetch counts for items needing approval
+$pending_User_Post_Count = $conn->query("SELECT COUNT(*) as count FROM posts  WHERE status = 'pending'")->fetch_assoc()['count'];
+
+// Count of unapproved books
+$unapprovedBooks = $conn->query("SELECT COUNT(*) as count FROM user_books WHERE approved = 0");
+$pendingUserBooksCount = $unapprovedBooks->fetch_assoc()['count'];
+
+// Count of unapproved cheatsheets
+$pendingUserCheatsheetCount = $conn->query("SELECT COUNT(*) as count FROM user_cheatsheets WHERE approved = 0")->fetch_assoc()['count'];
+
+// Count of unapproved testimonials
+$pendingUserTestimonialsCount = $conn->query("SELECT COUNT(*) as count FROM testimonials WHERE approved = 0")->fetch_assoc()['count'];
+
+// Count of unapproved interview experiences
+$pendingUserInterviewExpCount = $conn->query("SELECT COUNT(*) as count FROM user_interview_experience WHERE is_approved = 0")->fetch_assoc()['count'];
+
+// Count of unapproved job post
+$pending_job_approval_Count = $conn->query("SELECT COUNT(*) as count FROM job_post WHERE status = 'pending'")->fetch_assoc()['count'];
+$pending_job_post_Count = $conn->query("SELECT COUNT(*) as count FROM job_post WHERE status = 'pending'")->fetch_assoc()['count'];
+
+$pending_User_quiz_question_approval_Count = $conn->query("SELECT COUNT(*) as count FROM sanixazs_main_db.quiz_questions_pending WHERE status = 'pending'")->fetch_assoc()['count'];
+$approved_subcategories_Count = $conn->query("SELECT COUNT(*) as count FROM subcategories WHERE status = 'approved'")->fetch_assoc()['count'];
+$approved_categories_Count = $conn->query("SELECT COUNT(*) as count FROM categories WHERE status = 'approved'")->fetch_assoc()['count'];
+$approved_quiz_questions = $conn->query("SELECT COUNT(*) as count FROM quiz_questions_pending WHERE status = 'approved'")->fetch_assoc()['count'];
+$pending_quiz_questions = $conn->query("SELECT COUNT(*) as count FROM quiz_questions_pending WHERE status = 'pending'")->fetch_assoc()['count'];
+$pending_subcategories = $conn->query("SELECT COUNT(*) as count FROM subcategories WHERE status = 'pending'")->fetch_assoc()['count'];
 
 // Fetch quiz statistics
 $attemptedQuery = "SELECT COUNT(*) AS attempted FROM sanixazs_main_db.user_quiz_attempts WHERE user_id = ?";
@@ -91,7 +127,8 @@ $photoPath = !empty($user['photo']) ? 'uploads/' . htmlspecialchars($user['photo
     <link  rel="stylesheet"  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css"  />
     <script src="https://kit.fontawesome.com/ae360af17e.js"  crossorigin="anonymous" ></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="css/admin_styleone.css" />
+    <link rel="stylesheet" href="css/admin_menu_styles.css" />
+    <link rel="stylesheet" href="css/admin_styleone.css">
     
     <style>
         /* Modern Dashboard Enhancements */
@@ -449,6 +486,55 @@ $photoPath = !empty($user['photo']) ? 'uploads/' . htmlspecialchars($user['photo
                 </div>
               </div>
             </div>
+            <!-- Stats Grid -->
+             <div class="welcome-section animate-fade-in">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h1 class="welcome-title">pending things in all menus</h1>
+                  <p class="welcome-subtitle">please check and approve</p>
+              </div>
+              </div>
+            </div>
+              <!-- Stats Grid -->
+            <div class="stats-grid animate-fade-in">
+              <div class="stats-card users">
+                <div class="stats-icon">
+                  <i class="fas fa-users"></i>
+                </div>
+                <div class="stats-number"><?php echo $pending_quiz_questions; ?></div>
+                <div class="stats-label">pending Quiz questions</div>
+              </div>
+              <div class="stats-card quizzes">
+                <div class="stats-icon">
+                  <i class="fas fa-question-circle"></i>
+                </div>
+                <div class="stats-number"><?php echo $pending_User_Post_Count; ?></div>
+                <div class="stats-label">Pending posts</div>
+              </div>
+              <div class="stats-card performance">
+                <div class="stats-icon">
+                  <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="stats-number"><?php echo $pending_job_post_Count; ?></div>
+                <div class="stats-label">Pending job posts</div>
+              </div>
+              <div class="stats-card content">
+                <div class="stats-icon">
+                  <i class="fas fa-plus-circle"></i>
+                </div>
+                <div class="stats-number"><?php echo $pending_subcategories ?></div>
+                <div class="stats-label">Pending subcategories</div>
+              </div>
+            </div>
+
+            <div class="welcome-section animate-fade-in">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h1 class="welcome-title">existing things in all menus</h1>
+                  <p class="welcome-subtitle">need to increase them</p>
+              </div>
+              </div>
+            </div>
 
             <!-- Stats Grid -->
             <div class="stats-grid animate-fade-in">
@@ -456,31 +542,31 @@ $photoPath = !empty($user['photo']) ? 'uploads/' . htmlspecialchars($user['photo
                 <div class="stats-icon">
                   <i class="fas fa-users"></i>
                 </div>
-                <div class="stats-number">1,247</div>
+                <div class="stats-number"><?php echo $total_User_Count; ?></div>
                 <div class="stats-label">Total Users</div>
               </div>
               <div class="stats-card quizzes">
                 <div class="stats-icon">
                   <i class="fas fa-question-circle"></i>
                 </div>
-                <div class="stats-number"><?php echo $attempted; ?></div>
-                <div class="stats-label">Quiz Attempts</div>
+                <div class="stats-number"><?php echo $approved_quiz_questions; ?></div>
+                <div class="stats-label">Total quiz questions</div>
               </div>
               <div class="stats-card performance">
                 <div class="stats-icon">
                   <i class="fas fa-chart-line"></i>
                 </div>
-                <div class="stats-number"><?php echo $correctAnswers; ?></div>
-                <div class="stats-label">Correct Answers</div>
+                <div class="stats-number"><?php echo $approved_categories_Count; ?></div>
+                <div class="stats-label">Total Categories</div>
               </div>
               <div class="stats-card content">
                 <div class="stats-icon">
                   <i class="fas fa-plus-circle"></i>
                 </div>
-                <div class="stats-number"><?php echo $addedToday; ?></div>
-                <div class="stats-label">Added Today</div>
+                <div class="stats-number"><?php echo $approved_subcategories_Count; ?></div>
+                <div class="stats-label">Total sub categories</div>
               </div>
-            </div>
+            </div>          
 
             <!-- Quick Actions -->
             <div class="quick-actions animate-fade-in">

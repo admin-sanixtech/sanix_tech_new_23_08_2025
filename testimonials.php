@@ -2,7 +2,7 @@
 include 'db_connection.php';
 
 // Fetch approved testimonials using PDO
-$sql = "SELECT u.name, t.comment, t.created_at 
+$sql = "SELECT u.username, t.comment, t.created_at 
         FROM testimonials t 
         JOIN users u ON t.user_id = u.user_id 
         WHERE t.approved = 1";
@@ -20,7 +20,7 @@ $testimonials = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 echo '<div class="carousel-item' . ($isActive ? ' active' : '') . '">';
                 echo '<div class="testimonial text-center">';
                 echo '<p>"' . htmlspecialchars($row['comment']) . '"</p>';
-                echo '<h5>- ' . htmlspecialchars($row['name']) . '</h5>';
+                echo '<h5>- ' . htmlspecialchars($row['username']) . '</h5>';
                 echo '</div>';
                 echo '</div>';
                 $isActive = false;

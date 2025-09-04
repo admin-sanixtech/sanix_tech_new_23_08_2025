@@ -1,10 +1,29 @@
 <?php
 include 'config.php';  // Include session_start() and db_connection.php
 
-// Enable error reporting for debugging
+// Start the session if it's not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+require_once(__DIR__ . '/../../config/db_connection.php');
+
+// Enable error reporting to help with debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+// Check if user is admin (add this check if needed)
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: http://sanixtech.in/login.php');
+    exit();
+}
+
+// Check if the connection was successful
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
 
 // Fetch categories for the dropdown
 $categoryQuery = "SELECT * FROM categories";

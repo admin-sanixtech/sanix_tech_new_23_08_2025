@@ -1,26 +1,38 @@
 <?php
+// approve_user_testimonials.php
 session_start();
-include 'db_connection.php';
 
-// Enable error reporting
+// Include database connection
+require_once(__DIR__ . '/../../config/db_connection.php');
+
+// Enable error reporting for development (remove in production)
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Check if the user is admin
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    echo "Access denied. You must be an admin to view this page.";
-    exit;
+// Check if database connection is established
+if (!isset($conn) || !$conn) {
+    die("Database connection failed. Please check the db_connection.php file.");
 }
 
-// Admin ID for denial record
-$admin_id = $_SESSION['user_id'];
+// Check if user is admin
+if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+    header('Location: https://sanixtech.in/login.php');
+    exit();
+}
+
+// Admin ID for approval/denial record
+$admin_id = (int)$_SESSION['user_id'];
+
+// Initialize message variables
+$success_message = null;
+$error_message = null;
 
 // Handle approval and denial actions
 if (isset($_GET['action']) && isset($_GET['id'])) {
     $action = $_GET['action'];
     $testimonial_id = (int)$_GET['id'];
-    
+
     if ($action === 'approve') {
         // Update testimonial to approved
         $update_sql = "UPDATE testimonials SET approved = 1, approved_by = ?, approved_at = NOW() WHERE testimonial_id = ?";
@@ -34,25 +46,22 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
             }
             $stmt->close();
         } else {
-            $error_message = "Error preparing statement: " . $conn->error;
+            $error_message = "Error preparing approval statement: " . $conn->error;
         }
-    } 
-    elseif ($action === 'deny') {
-        // Delete testimonial or mark as denied (depending on your preference)
-        // Option 1: Delete the testimonial
+    } elseif ($action === 'deny') {
+        // Delete testimonial (Option 1: Delete)
         $delete_sql = "DELETE FROM testimonials WHERE testimonial_id = ?";
         $stmt = $conn->prepare($delete_sql);
-        
+
         // Option 2: Mark as denied (uncomment if you prefer to keep denied records)
         /*
         $update_sql = "UPDATE testimonials SET approved = -1, denied_by = ?, denied_at = NOW() WHERE testimonial_id = ?";
         $stmt = $conn->prepare($update_sql);
+        $stmt->bind_param("ii", $admin_id, $testimonial_id);
         */
-        
+
         if ($stmt) {
             $stmt->bind_param("i", $testimonial_id);
-            // For option 2, use: $stmt->bind_param("ii", $admin_id, $testimonial_id);
-            
             if ($stmt->execute()) {
                 $success_message = "Testimonial denied and removed successfully!";
             } else {
@@ -60,34 +69,37 @@ if (isset($_GET['action']) && isset($_GET['id'])) {
             }
             $stmt->close();
         } else {
-            $error_message = "Error preparing statement: " . $conn->error;
+            $error_message = "Error preparing denial statement: " . $conn->error;
         }
     }
-    
-    // Redirect to prevent resubmission on refresh
+
+    // Redirect to prevent form resubmission
     header("Location: " . $_SERVER['PHP_SELF']);
     exit;
 }
 
 // Query to retrieve all pending testimonials
-$sql = "SELECT t.testimonial_id, u.name, t.comment, t.created_at 
+$sql = "SELECT t.testimonial_id, u.username, t.comment, t.created_at 
         FROM testimonials t 
-        JOIN users u ON t.user_id = u.user_id 
+        LEFT JOIN users u ON t.user_id = u.user_id 
         WHERE t.approved = 0
         ORDER BY t.created_at DESC";
 $result = $conn->query($sql);
 
 if (!$result) {
-    die("SQL Query Error: " . $conn->error);
-}
-
-// Fetch all results into an array to avoid pointer issues
-$testimonials = [];
-if ($result->num_rows > 0) {
+    $error_message = "SQL Query Error: " . $conn->error;
+    $testimonials = [];
+} else {
+    // Fetch all results into an array
+    $testimonials = [];
     while ($row = $result->fetch_assoc()) {
         $testimonials[] = $row;
     }
+    $result->free();
 }
+
+// Close database connection (optional, depending on your db_connection.php setup)
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +109,7 @@ if ($result->num_rows > 0) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Testimonials - Admin Panel</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/admin_styleone.css" />
+    <link rel="stylesheet" href="../../css/admin_styleone.css">
     <style>
         .testimonial-comment {
             max-width: 300px;
@@ -114,23 +126,23 @@ if ($result->num_rows > 0) {
 <body>
 <div class="wrapper">
     <aside id="sidebar" class="js-sidebar">
-        <?php include 'admin_menu.php'; ?>
+        <?php include '../../admin_menu.php'; ?>
     </aside>
     <div class="main">
-        <?php include 'admin_navbar.php'; ?>
+        <?php include '../../admin_navbar.php'; ?>
         
         <div class="container-fluid px-4">
             <h2 class="mt-4 mb-4">Manage Pending Testimonials</h2>
             
             <!-- Success/Error Messages -->
-            <?php if (isset($success_message)): ?>
+            <?php if ($success_message): ?>
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                     <?php echo htmlspecialchars($success_message); ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
             
-            <?php if (isset($error_message)): ?>
+            <?php if ($error_message): ?>
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     <?php echo htmlspecialchars($error_message); ?>
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -173,7 +185,7 @@ if ($result->num_rows > 0) {
                                         <tr>
                                             <td><?php echo $sno++; ?></td>
                                             <td>
-                                                <strong><?php echo htmlspecialchars($row['name'] ?? 'Unknown User'); ?></strong>
+                                                <strong><?php echo htmlspecialchars($row['username'] ?? 'Unknown User'); ?></strong>
                                             </td>
                                             <td class="testimonial-comment">
                                                 <?php echo htmlspecialchars($row['comment'] ?? 'No comment'); ?>
@@ -225,7 +237,7 @@ if ($result->num_rows > 0) {
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Font Awesome for icons (optional) -->
+<!-- Font Awesome for icons -->
 <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 
 <script>

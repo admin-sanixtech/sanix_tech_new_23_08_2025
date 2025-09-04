@@ -1,16 +1,27 @@
 <?php
 // admin_create_post.php
 session_start();
-include 'db_connection.php'; // Database connection
+
+require_once(__DIR__ . '/../../config/db_connection.php');
+
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Check if the user is admin
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    echo "Access denied. You must be an admin to view this page.";
-    exit;
+// Secure admin check
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header('Location: http://sanixtech.in/login.php');
+    exit();
+}
+
+
+$message = '';
+$errors = [];
+
+// Debug: Check database connection
+if (!$conn) {
+    die("Database connection failed: " . mysqli_connect_error());
 }
 
 $message = "";
@@ -201,8 +212,8 @@ if (isset($_GET['category_id']) && !isset($_POST['title'])) {
     <title>Create New Post</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha2/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link rel="stylesheet" href="css/admin_styleone.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/1.3.7/quill.snow.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/admin_styleone.css">
     
     <style>
         .image-upload-area {
@@ -387,10 +398,10 @@ if (isset($_GET['category_id']) && !isset($_POST['title'])) {
 <body>
 <div class="wrapper">
     <aside id="sidebar" class="js-sidebar">
-        <?php include 'admin_menu.php'; ?>
+        <?php include '../../admin_menu.php'; ?>
     </aside>
     <div class="main">
-        <?php include 'admin_navbar.php'; ?>
+        <?php include '../../admin_navbar.php'; ?>
         
         <main class="content px-3 py-2">
             <div class="container-fluid">

@@ -10,11 +10,12 @@ ini_set('memory_limit', '256M');
 ini_set('max_execution_time', '300');
 
 session_start();
-include '../db_connection.php';
+// include '../db_connection.php';
+require_once(__DIR__ . '/../../config/db_connection.php');
 
 // Check admin access
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
+    header('Location: http://sanixtech.in/login.php');
     exit();
 }
 
@@ -290,8 +291,8 @@ function uploadImage($file, $upload_dir, $prefix = 'img') {
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/admin_styleone.css">
-    
+    <link rel="stylesheet" href="../../css/admin_styleone.css">
+      
     <style>
         .form-section {
             background: rgba(255, 255, 255, 0.05);
@@ -418,13 +419,13 @@ function uploadImage($file, $upload_dir, $prefix = 'img') {
 <div class="wrapper">
     <!-- Sidebar -->
     <aside id="sidebar" class="js-sidebar">
-        <?php include 'admin_menu.php'; ?>
+        <?php include '../../admin_menu.php'; ?>
     </aside>
     
     <!-- Main Content -->
     <div class="main">
         <!-- Top Navigation -->
-        <?php include 'admin_navbar.php'; ?>
+        <?php include '../../admin_navbar.php'; ?>
         
         <main class="content px-3 py-4">
             <div class="container-fluid">

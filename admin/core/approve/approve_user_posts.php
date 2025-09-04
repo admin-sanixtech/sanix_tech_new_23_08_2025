@@ -1,13 +1,13 @@
 <?php
 //approve_user_posts.php
+session_start();
+require_once(__DIR__ . '/../../config/db_connection.php');
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-session_start();
-include 'db_connection.php';
-
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
+    header('Location: https://sanixtech.in/login.php');
     exit();
 }
 
@@ -17,6 +17,7 @@ $message = '';
 if (!$conn) {
     die("Database connection failed: " . mysqli_connect_error());
 }
+
 
 // Handle AJAX requests
 if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest') {
@@ -175,7 +176,7 @@ $pending_query = "
         p.subcategory_id,
         COALESCE(c.category_name, 'Unknown Category') as category_name,
         COALESCE(s.subcategory_name, 'Unknown Subcategory') as subcategory_name,
-        COALESCE(u.name, CONCAT('User #', p.createdby)) as creator_name,
+        COALESCE(u.username, CONCAT('User #', p.createdby)) as creator_name,
         u.email as creator_email
     FROM posts p
     LEFT JOIN categories c ON p.category_id = c.category_id
@@ -197,9 +198,9 @@ $recent_query = "
         p.title,
         p.status,
         p.createdat,
-        COALESCE(u.name, CONCAT('User #', p.createdby)) as creator_name,
+        COALESCE(u.username, CONCAT('User #', p.createdby)) as creator_name,
         COALESCE(ah.created_at, p.createdat) as action_date,
-        COALESCE(admin_u.name, 'System') as approver_name
+        COALESCE(admin_u.username, 'System') as approver_name
     FROM posts p 
     LEFT JOIN users u ON p.createdby = u.user_id
     LEFT JOIN post_approval_history ah ON p.post_id = ah.post_id
@@ -224,7 +225,7 @@ $recent_result = $conn->query($recent_query);
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/admin_styleone.css">
+    <link rel="stylesheet" href="../../css/admin_styleone.css">
     
     <style>
         .post-card {
@@ -389,13 +390,13 @@ $recent_result = $conn->query($recent_query);
 <div class="wrapper">
     <!-- Sidebar -->
     <aside id="sidebar" class="js-sidebar">
-        <?php include 'admin_menu.php'; ?>
+        <?php include '../../admin_menu.php'; ?>
     </aside>
     
     <!-- Main Content -->
     <div class="main">
         <!-- Top Navigation -->
-        <?php include 'admin_navbar.php'; ?>
+        <?php include '../../admin_navbar.php'; ?>
         
         <main class="content px-3 py-4">
             <div class="container-fluid">

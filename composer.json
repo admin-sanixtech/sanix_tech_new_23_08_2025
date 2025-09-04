@@ -1,0 +1,22 @@
+{
+    "name": "sanixtech/registration-system",
+    "description": "Beautiful registration system with email verification",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "phpmailer/phpmailer": "^6.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "SanixTech\\": "src/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"if (!is_dir('uploads')) { mkdir('uploads', 0755, true); echo 'Created uploads directory\\n'; }\""
+        ]
+    }
+}

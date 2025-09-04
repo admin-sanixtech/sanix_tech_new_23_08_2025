@@ -4,10 +4,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 session_start();
-include '../db_connection.php';
+require_once(__DIR__ . '/../../config/db_connection.php');
 
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header('Location: ../login.php');
+    header('Location: https://sanixtech.in/login.php');
     exit();
 }
 
@@ -232,7 +232,7 @@ $recent_result = $conn->query($recent_query);
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/admin_styleone.css">
+    <link rel="stylesheet" href="../../css/admin_styleone.css">
     
     <style>
         .job-card {
@@ -382,13 +382,13 @@ $recent_result = $conn->query($recent_query);
 <div class="wrapper">
     <!-- Sidebar -->
     <aside id="sidebar" class="js-sidebar">
-        <?php include 'admin_menu.php'; ?>
+       <?php include '../../admin_menu.php'; ?>
     </aside>
     
     <!-- Main Content -->
     <div class="main">
         <!-- Top Navigation -->
-        <?php include 'admin_navbar.php'; ?>
+        <?php include '../../admin_navbar.php'; ?>
         
         <main class="content px-3 py-4">
             <div class="container-fluid">

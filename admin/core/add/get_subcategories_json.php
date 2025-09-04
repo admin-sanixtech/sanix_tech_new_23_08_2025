@@ -4,7 +4,7 @@
 // Set content type to JSON
 header('Content-Type: application/json');
 
-include 'db_connection.php';
+require_once(__DIR__ . '/../../config/db_connection.php');
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
